@@ -1,0 +1,15 @@
+<{if $show_breadcrumb == TRUE}>
+	<div class="projects_headertable">
+
+			<{if $projects_module_home}>
+				<span class="projects_modulename"><{$projects_module_home}></span>
+			<{/if}>
+			<{if $projects_category_path}>
+				<span class="projects_breadcrumb"><{if $projects_module_home}>&gt; <{/if}><{$projects_category_path}></span>
+			<{/if}>
+	</div>
+<{else}>
+	<{if !$projects_project}>
+		<h1><{$smarty.const._CO_PROJECTS_PROJECTS}><{if $projects_tag_name}> - <{$projects_tag_name}><{/if}></h1>
+	<{/if}>
+<{/if}>

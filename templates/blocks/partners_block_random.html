@@ -1,0 +1,15 @@
+<{if $block.show_logos == TRUE}>
+	<{foreach item = project from = $block.random_projects}>
+		<{if $project.logo}>
+			<div class="projects_random_logo" style="text-align: center; margin: 1em 0em 0em 0em;">
+				<a href="<{$project.itemUrl}>"><{resized_image file=$project.logo width=$block.logo_block_display_width height="999" fit="inside"}></a>
+			</div>
+		<{/if}>
+	<{/foreach}>
+<{else}>
+	<ul>
+		<{foreach item = project from = $block.random_projects}>
+			<li><a href="<{$project.itemUrl}>"><{$project.title}></a></li>
+		<{/foreach}>
+	</ul>
+<{/if}>

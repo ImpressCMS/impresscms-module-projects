@@ -26,7 +26,10 @@ function show_random_projects($options)
 	$sprocketsModule = icms_getModuleInfo('sprockets');
 	include_once(ICMS_ROOT_PATH . '/modules/' . $projectsModule->getVar('dirname') . '/include/common.php');
 	$projects_project_handler = icms_getModuleHandler('project', $projectsModule->getVar('dirname'), 'projects');
-	$sprockets_taglink_handler = icms_getModuleHandler('taglink', $sprocketsModule->getVar('dirname'), 'sprockets');
+	if ($sprocketsModule)
+	{
+		$sprockets_taglink_handler = icms_getModuleHandler('taglink', $sprocketsModule->getVar('dirname'), 'sprockets');
+	}
 	
 	$criteria = new icms_db_criteria_Compo();
 	$projectList = $projects = array();

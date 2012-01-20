@@ -1,0 +1,41 @@
+<!-- If you want to know why some style information is hard coded, the answer is that module
+style sheets do not work on cached blocks. I think this is a long-standing core bug -->
+
+<!-- Summary mode -->
+<{if $block.show_logos == TRUE}>
+	<{foreach item = project from = $block.random_projects}>
+		<h2 style="clear:both; margin-bottom:1em;"><a href="<{$project.itemUrl}>"><{$project.title}></a>
+				<{if $project.updated}>
+					<span style="color:red;"> (<{$smarty.const._CO_PROJECTS_PROJECT_UPDATED}> <{$project.date}>)</span>
+				<{/if}>
+			</h2>
+			<div>
+				<{if $project.logo}>
+					<{if $freestyle_logo_dimensions}>
+					
+						<div style="<{$block.project_logo_position}>">
+							<a href="<{$project.itemUrl}>"><img src="<{$project.logo}>" alt="<{$project.title}>" /></a>
+						</div>
+					
+					<{else}>
+					
+						<div style="<{$block.project_logo_position}>">
+							<a href="<{$project.itemUrl}>"><{resized_image file=$project.logo width=$block.logo_block_display_width height="999" fit="inside"}></a>
+						</div>
+					
+					<{/if}>
+				<{/if}>
+				<div>
+					<p><{$project.description}></p>
+				</div>
+			</div>
+	<{/foreach}>
+	
+<!-- Compact list mode -->
+<{else}>
+	<ul>
+		<{foreach item = project from = $block.random_projects}>
+			<li>test</li>
+		<{/foreach}>
+	</ul>
+<{/if}>

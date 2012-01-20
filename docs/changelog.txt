@@ -1,3 +1,4 @@
-<b><u>=> Unreleased: Version 1.0 Beta</u></b>
+Beta V1.0
+=========
 
-- First public release of the module.
+- First test release, 20/1/2012. For ImpressCMS V1.3.x only.

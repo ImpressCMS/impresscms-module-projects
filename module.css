@@ -1,3 +1,6 @@
+/* Note: Block styles are hard coded in the block template, as module style sheets don't work in 
+cached blocks (core bug?). So if you want to alter the block CSS, you'll find it in the block template. */
+
 .projects_headertable
 {
 	padding: 0; margin: 0; border-bottom: 1px solid; margin-bottom: 10px;

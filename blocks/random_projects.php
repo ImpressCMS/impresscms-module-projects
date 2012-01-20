@@ -85,13 +85,43 @@ function show_random_projects($options)
 	$project_list = array_slice($project_list, 0, $options[0], TRUE);
 	$criteria->add(new icms_db_criteria_Item('project_id', '(' . implode(',', $project_list) . ')', 'IN'));
 			
-	// Retrieve the projects and assign them to the block - need to shuffle a second time
+	// Retrieve the projects and assign them to the block
 	$projects = $projects_project_handler->getObjects($criteria, TRUE, FALSE);
-	shuffle($projects);
+	
+	// Need to shuffle them again as the DB will return them in order whether you like it or not
+	if ($options[2] == TRUE)
+	{
+		shuffle($projects);
+	}
 
-	// Adjust the logo paths
+	// Adjust the logo paths check if an 'updated' notice should be displayed. this works by 
+	// comparing the time since the project was last updated against the length of time that an 
+	// updated notice should be shown (as set in the module preferences)
+	
+	if (icms_getConfig('show_last_updated', $projectsModule->getVar('dirname')))
+	{
+		$update_periods = array(
+			0 => 0,
+			1 => 86400,		// Show updated notice for 1 day
+			2 => 259200,	// Show updated notice for 3 days
+			3 => 604800,	// Show updated notice for 1 week
+			4 => 1209600,	// Show updated notice for 2 weeks
+			5 => 1814400,	// Show updated notice for 3 weeks
+			6 => 2419200	// Show updated notice for 4 weeks
+			);
+		$updated_notice_period = $update_periods[icms_getConfig('updated_notice_period', $projectsModule->getVar('dirname'))];
+	}
 	foreach ($projects as $key => &$object)
 	{
+		if (icms_getConfig('show_last_updated', $projectsModule->getVar('dirname')))
+		{
+			$updated = strtotime($object['date']);
+			if ((time() - $updated) < $updated_notice_period)
+			{
+				$object['date'] = date(icms_getConfig('date_format', $projectsModule->getVar('dirname')), $updated);
+				$object['updated'] = TRUE;
+			}
+		}
 		$object['logo'] = ICMS_URL . '/uploads/' . $projectsModule->getVar('dirname') . '/project/' . $object['logo'];
 	}
 	
@@ -99,6 +129,15 @@ function show_random_projects($options)
 	$block['random_projects'] = $projects;
 	$block['show_logos'] = $options[3];
 	$block['logo_block_display_width'] = icms_getConfig('logo_block_display_width', $projectsModule->getVar('dirname'));
+	if (icms_getConfig('project_logo_position', $projectsModule->getVar('dirname') == 1)) // Align right
+	{
+		$block['project_logo_position'] = 'float:right; margin: 0em 0em 1em 1em;';
+	}
+	else // Align left
+	{
+		$block['project_logo_position'] = 'float:left; margin: 0em 1em 1em 0em;';
+	}
+	$block['freestyle_logo_dimensions'] = icms_getConfig('freestyle_logo_dimensions', $projectsModule->getVar('dirname'));
 
 	return $block;
 }

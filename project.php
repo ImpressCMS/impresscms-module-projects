@@ -58,17 +58,20 @@ if($projectObj && !$projectObj->isNew())
 		$project['logo'] = $document_root . 'uploads/' . $directory_name . '/project/' . $project['logo'];
 	}
 	
+	// Check if an 'updated' notice should be displayed. This works by comparing the time since the 
+	// project was last updated against the length of time that an updated notice should be shown
+	// (as set in the module preferences).
 	if (icms::$module->config['show_last_updated'] == TRUE)
 	{
 		$updated = strtotime($project['date']);
 		$update_periods = array(
 			0 => 0,
-			1 => 86400,
-			2 => 259200,
-			3 => 604800,
-			4 => 1209600,
-			5 => 1814400,
-			6 => 2419200
+			1 => 86400,		// Show updated notice for 1 day
+			2 => 259200,	// Show updated notice for 3 days
+			3 => 604800,	// Show updated notice for 1 week
+			4 => 1209600,	// Show updated notice for 2 weeks
+			5 => 1814400,	// Show updated notice for 3 weeks
+			6 => 2419200	// Show updated notice for 4 weeks
 			);
 		$updated_notice_period = $update_periods[icms::$module->config['updated_notice_period']];
 
@@ -169,8 +172,7 @@ else
 			if (!$result)
 			{
 				echo 'Error';
-				exit;
-				
+				exit;	
 			}
 			else
 			{
@@ -180,7 +182,6 @@ else
 					{
 						$project_count = $count;
 					}
-					
 				}
 			}
 			
@@ -202,11 +203,9 @@ else
 			{
 				echo 'Error';
 				exit;
-				
 			}
 			else
 			{
-
 				$rows = $projects_project_handler->convertResultSet($result, TRUE, FALSE);
 				foreach ($rows as $key => $row) 
 				{

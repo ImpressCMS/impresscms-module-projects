@@ -35,7 +35,7 @@ $modversion = array(
 /**  Development information */
 	"status_version"			=> "1.0",
 	"status"					=> "Beta",
-	"date"						=> "Unreleased",
+	"date"						=> "20/1/2012",
 	"author_word"				=> "For ICMS 1.3+ only.",
 	"warning"					=> _CO_ICMS_WARNING_BETA,
 
@@ -92,7 +92,7 @@ $modversion['blocks'][1] = array(
 	'description' => _MI_PROJECTS_RANDOMDSC,
 	'show_func' => 'show_random_projects',
 	'edit_func' => 'edit_random_projects',
-	'options' => '5|0|0|1', // Number of articles per page, tag_id, randomise, logos or list view
+	'options' => '5|0|0|1', // Number of articles per page, tag_id, randomise, summary or list view
 	'template' => 'projects_block_random.html'
 );
 

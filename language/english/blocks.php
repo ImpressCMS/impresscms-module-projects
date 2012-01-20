@@ -16,6 +16,6 @@ define("_MB_PROJECTS_RANDOM_ALL", "All");
 define("_MB_PROJECTS_RANDOM_TAG", "Sort projects by tag");
 define("_MB_PROJECTS_RANDOM_LIMIT", "Number of projects to show in block");
 define("_MB_PROJECTS_RANDOM_OR_FIXED", "Randomise? (Do not cache the block!)");
-define("_MB_PROJECTS_LOGOS_OR_LIST", "Show project logos in block?");
+define("_MB_PROJECTS_LOGOS_OR_LIST", "Show project summaries? (Otherwise will show compact list).");
 define("_MB_PROJECTS_RANDOM_YES", "Yes");
 define("_MB_PROJECTS_RANDOM_NO", "No");

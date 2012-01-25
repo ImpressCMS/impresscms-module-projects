@@ -148,7 +148,7 @@ class mod_projects_ProjectHandler extends icms_ipf_Handler
 		{
 			$sprockets_taglink_handler = icms_getModuleHandler('taglink',
 					$sprocketsModule->getVar('dirname'), 'sprockets');
-			$sprockets_taglink_handler->deleteAllForObject(&$obj);
+			$sprockets_taglink_handler->deleteAllForObject($obj);
 		}
 
 		return true;

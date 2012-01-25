@@ -30,6 +30,15 @@ $directory_name = basename(dirname(__FILE__));
 $script_name = getenv("SCRIPT_NAME");
 $document_root = str_replace('modules/' . $directory_name . '/project.php', '', $script_name);
 
+// Optional tagging support
+$sprocketsModule = icms_getModuleInfo('sprockets');
+if ($sprocketsModule)
+{
+	$sprockets_tag_handler = icms_getModuleHandler('tag', $sprocketsModule->getVar('dirname'), $sprocketsModule->getVar('name'));
+	$sprockets_taglink_handler = icms_getModuleHandler('taglink', $sprocketsModule->getVar('dirname'), $sprocketsModule->getVar('name'));
+	$sprockets_tag_buffer = $sprockets_tag_handler->getObjects(null, true, false);
+}
+
 // Assign common logo preferences to template
 $icmsTpl->assign('display_project_logos', icms::$module->config['display_project_logos']);
 $icmsTpl->assign('freestyle_logo_dimensions', icms::$module->config['freestyle_logo_dimensions']);
@@ -82,6 +91,18 @@ if($projectObj && !$projectObj->isNew())
 		}
 	}
 	
+	// Prepare tags for display
+	if ($sprocketsModule)
+	{
+		$project['tags'] = array();
+		$project_tag_array = $sprockets_taglink_handler->getTagsForObject($projectObj->getVar('project_id'), $projects_project_handler);
+		foreach ($project_tag_array as $key => $value)
+		{
+			$project['tags'][$value] = '<a href="' . PROJECTS_URL . 'project.php?tag_id=' . $value 
+					. '">' . $sprockets_tag_buffer[$value]['title'] . '</a>';
+		}
+	}
+	
 	$icmsTpl->assign("projects_project", $project);
 
 	$icms_metagen = new icms_ipf_Metagen($projectObj->getVar("title"), 
@@ -99,7 +120,6 @@ else
 	{
 		// View projects as list of summary descriptions
 		
-		$sprocketsModule = icms_getModuleInfo('sprockets');
 		$project_summaries = array();
 		
 		// Load Sprockets language file, if required, to stop nagging warning notices

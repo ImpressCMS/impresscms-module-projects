@@ -193,7 +193,8 @@ else
 			$project_count = '';
 			$group_query = "SELECT count(*) FROM " . $projects_project_handler->table . ", "
 					. $sprockets_taglink_handler->table
-					. " WHERE `online_status` = '1'"
+					. " WHERE `project_id` = `iid`"
+					. " AND `online_status` = '1'"
 					. " AND `complete` = '1'"
 					. " AND `tid` = '" . $clean_tag_id . "'"
 					. " AND `mid` = '" . icms::$module->getVar('mid') . "'"

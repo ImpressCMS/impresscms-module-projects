@@ -159,8 +159,10 @@ else
 			}
 			
 			// Load the tag navigation select box
-			// $action, $selected = null, $zero_option_message = '---', $navigation_elements_only = true, $module_id = null, $item = null
-			$tag_select_box = $sprockets_tag_handler->getTagSelectBox('project.php', $clean_tag_id, _CO_PROJECTS_PROJECT_ALL_TAGS, TRUE, icms::$module->getVar('mid'));
+			// $action, $selected = null, $zero_option_message = '---', 
+			// $navigation_elements_only = true, $module_id = null, $item = null,
+			$tag_select_box = $sprockets_tag_handler->getTagSelectBox('project.php', $clean_tag_id, 
+					_CO_PROJECTS_PROJECT_ALL_TAGS, TRUE, icms::$module->getVar('mid'));
 			$icmsTpl->assign('projects_tag_select_box', $tag_select_box);
 		}
 		

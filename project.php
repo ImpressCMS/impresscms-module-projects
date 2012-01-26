@@ -121,7 +121,7 @@ else
 	{
 		// View projects as list of summary descriptions
 		
-		$project_summaries = array();
+		$project_summaries = $linked_project_ids = array();
 		
 		// Load Sprockets language file, if required, to stop nagging warning notices
 		if ($sprocketsModule)
@@ -177,7 +177,7 @@ else
 			$query = $rows = $project_count = '';
 			$linked_project_ids = array();
 			
-			// First, count the number of articles for the pagination control
+			// First, count the number of projects for the pagination control
 			$project_count = '';
 			$group_query = "SELECT count(*) FROM " . $projects_project_handler->table . ", "
 					. $sprockets_taglink_handler->table
@@ -253,6 +253,44 @@ else
 			$project_summaries = $projects_project_handler->getObjects($criteria, TRUE, FALSE);
 		}
 		
+		// Prepare tags. A list of project IDs is used to retrieve relevant taglinks. The taglinks
+		// are sorted into a multidimensional array, using the project ID as the key to each subarray.
+		// Then its just a case of assigning each subarray to the matching project.
+ 
+		// Prepare a list of project_id, this will be used to create a taglink buffer, which is used
+		// to create tag links for each project
+		foreach ($project_summaries as $key => $value) {
+			$linked_project_ids[] = $value['project_id'];
+		}
+		$linked_project_ids = '(' . implode(',', $linked_project_ids) . ')';
+
+		// Prepare multidimensional array of tag_ids with project_id (iid) as key
+		$projectModule = icms_getModuleInfo(basename(dirname(__FILE__)));
+		$taglink_buffer = $project_tag_id_buffer = array();
+		$criteria = new  icms_db_criteria_Compo();
+		$criteria->add(new icms_db_criteria_Item('mid', $projectModule->getVar('mid')));
+		$criteria->add(new icms_db_criteria_Item('item', 'project'));
+		$criteria->add(new icms_db_criteria_Item('iid', $linked_project_ids, 'IN'));
+		$taglink_buffer = $sprockets_taglink_handler->getObjects($criteria, TRUE, TRUE);
+		unset($criteria);
+
+		// Build tags, with URLs for navigation
+		foreach ($taglink_buffer as $key => $taglink) {
+
+			if (!array_key_exists($taglink->getVar('iid'), $project_tag_id_buffer)) {
+				$project_tag_id_buffer[$taglink->getVar('iid')] = array();
+			}
+			$project_tag_id_buffer[$taglink->getVar('iid')][] = '<a href="' . PROJECTS_URL . 
+					'project.php?tag_id=' . $taglink->getVar('iid') . '">' 
+					. $sprockets_tag_buffer[$taglink->getVar('tid')]['title']
+					. '</a>';
+		}
+
+		// Assign each subarray of tags to the matching projects, using the item id as marker
+		foreach ($project_tag_id_buffer as $key => $value) {
+			$project_summaries[$key]['tags'] = $value;
+		}			
+		
 		// Add 'updated' notices and adjust the logo paths to allow dynamic resizing, prepare tags for display
 		foreach ($project_summaries as &$project)
 		{
@@ -261,12 +299,12 @@ else
 				$updated = strtotime($project['date']);
 				$update_periods = array(
 					0 => 0,
-					1 => 86400,
-					2 => 259200,
-					3 => 604800,
-					4 => 1209600,
-					5 => 1814400,
-					6 => 2419200
+					1 => 86400,		// Show updated notice for 1 day
+					2 => 259200,	// Show updated notice for 3 days
+					3 => 604800,	// Show updated notice for 1 week
+					4 => 1209600,	// Show updated notice for 2 weeks
+					5 => 1814400,	// Show updated notice for 3 weeks
+					6 => 2419200	// Show updated notice for 4 weeks
 					);
 				$updated_notice_period = $update_periods[icms::$module->config['updated_notice_period']];
 				
@@ -274,18 +312,6 @@ else
 				{
 					$project['date'] = date(icms::$module->config['date_format'], $updated);
 					$project['updated'] = TRUE;
-				}
-				
-				// Prepare tags for display
-				if ($sprocketsModule)
-				{
-					$project['tags'] = array();
-					$project_tag_array = $sprockets_taglink_handler->getTagsForObject($project['project_id'], $projects_project_handler);
-					foreach ($project_tag_array as $key => $value)
-					{
-						$project['tags'][$value] = '<a href="' . PROJECTS_URL . 'project.php?tag_id=' . $value 
-								. '">' . $sprockets_tag_buffer[$value]['title'] . '</a>';
-					}
 				}
 			}
 			

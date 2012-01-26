@@ -30,10 +30,11 @@ $directory_name = basename(dirname(__FILE__));
 $script_name = getenv("SCRIPT_NAME");
 $document_root = str_replace('modules/' . $directory_name . '/project.php', '', $script_name);
 
-// Optional tagging support
+// Optional tagging support (only if Sprockets module installed)
 $sprocketsModule = icms_getModuleInfo('sprockets');
 if ($sprocketsModule)
 {
+	icms_loadLanguageFile("sprockets", "common");
 	$sprockets_tag_handler = icms_getModuleHandler('tag', $sprocketsModule->getVar('dirname'), $sprocketsModule->getVar('name'));
 	$sprockets_taglink_handler = icms_getModuleHandler('taglink', $sprocketsModule->getVar('dirname'), $sprocketsModule->getVar('name'));
 	$sprockets_tag_buffer = $sprockets_tag_handler->getObjects(null, true, false);
@@ -252,7 +253,7 @@ else
 			$project_summaries = $projects_project_handler->getObjects($criteria, TRUE, FALSE);
 		}
 		
-		// Add 'updated' notices and adjust the logo paths to allow dynamic resizing as per the resized_image Smarty plugin
+		// Add 'updated' notices and adjust the logo paths to allow dynamic resizing, prepare tags for display
 		foreach ($project_summaries as &$project)
 		{
 			if (icms::$module->config['show_last_updated'] == TRUE)
@@ -273,6 +274,18 @@ else
 				{
 					$project['date'] = date(icms::$module->config['date_format'], $updated);
 					$project['updated'] = TRUE;
+				}
+				
+				// Prepare tags for display
+				if ($sprocketsModule)
+				{
+					$project['tags'] = array();
+					$project_tag_array = $sprockets_taglink_handler->getTagsForObject($project['project_id'], $projects_project_handler);
+					foreach ($project_tag_array as $key => $value)
+					{
+						$project['tags'][$value] = '<a href="' . PROJECTS_URL . 'project.php?tag_id=' . $value 
+								. '">' . $sprockets_tag_buffer[$value]['title'] . '</a>';
+					}
 				}
 			}
 			

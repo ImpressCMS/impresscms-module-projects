@@ -161,7 +161,6 @@ class mod_projects_Project extends icms_ipf_seo_Object
 	 */
 	public function loadTags()
 	{
-		
 		$ret = '';
 		
 		$sprocketsModule = icms_getModuleInfo('sprockets');

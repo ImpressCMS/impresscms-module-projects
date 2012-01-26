@@ -4,6 +4,9 @@
 			<{if $projects_module_home}>
 				<span class="projects_modulename"><{$projects_module_home}></span>
 			<{/if}>
+			<{if $projects_completed_path}>
+				<span class="projects_breadcrumb"><{if $projects_module_home}>&gt; <{/if}><{$projects_completed_path}>
+			<{/if}>
 			<{if $projects_category_path}>
 				<span class="projects_breadcrumb"><{if $projects_module_home}>&gt; <{/if}><{$projects_category_path}></span>
 			<{/if}>

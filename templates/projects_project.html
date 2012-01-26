@@ -13,10 +13,7 @@
 		<{/if}>
 		<div class="itemInfo">
 			<{if $projects_project.tags}>
-				<{$smarty.const._CO_PROJECTS_PROJECT_TAGS}> 
-				<{foreach item = tag from = $projects_project.tags}>
-					<{$tag}>
-				<{/foreach}>
+				<{$smarty.const._CO_PROJECTS_PROJECT_TAGS}> <{$projects_project.tags}>
 			<{/if}>
 			<{if $projects_project.tags && $projects_project.updated}> | <{/if}>
 			<{if $projects_project.updated}>
@@ -106,10 +103,7 @@
 			<h2 class="projects_separator projects_clear"><a href="<{$project.itemUrl}>"><{$project.title}></a></h2>
 			<div class="itemInfo">
 				<{if $project.tags}>
-					<{$smarty.const._CO_PROJECTS_PROJECT_TAGS}> 
-					<{foreach item = tag from = $project.tags}>
-						<{$tag}>
-					<{/foreach}>
+					<{$smarty.const._CO_PROJECTS_PROJECT_TAGS}> <{$project.tags}>
 				<{/if}>
 				<{if $project.tags && $project.updated}> | <{/if}>
 				<{if $project.updated}>

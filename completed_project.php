@@ -22,13 +22,24 @@ $clean_start = isset($_GET["start"]) ? (int)($_GET["start"]) : 0;
 
 // Get the requested project, or retrieve the index page. Only show online projects
 $projects_project_handler = icms_getModuleHandler("project", basename(dirname(__FILE__)), "projects");
-$criteria = icms_buildCriteria(array('online_status' => '0'));
+$criteria = icms_buildCriteria(array('online_status' => '1', 'complete' => '1'));
+
 $projectObj = $projects_project_handler->get($clean_project_id, TRUE, FALSE, $criteria);
 
 // Get relative path to document root for this ICMS install. This is required to call the logos correctly if ICMS is installed in a subdirectory
 $directory_name = basename(dirname(__FILE__));
 $script_name = getenv("SCRIPT_NAME");
 $document_root = str_replace('modules/' . $directory_name . '/completed_project.php', '', $script_name);
+
+// Optional tagging support (only if Sprockets module installed)
+$sprocketsModule = icms_getModuleInfo('sprockets');
+if ($sprocketsModule)
+{
+	icms_loadLanguageFile("sprockets", "common");
+	$sprockets_tag_handler = icms_getModuleHandler('tag', $sprocketsModule->getVar('dirname'), $sprocketsModule->getVar('name'));
+	$sprockets_taglink_handler = icms_getModuleHandler('taglink', $sprocketsModule->getVar('dirname'), $sprocketsModule->getVar('name'));
+	$sprockets_tag_buffer = $sprockets_tag_handler->getObjects(NULL, TRUE, FALSE);
+}
 
 // Assign common logo preferences to template
 $icmsTpl->assign('display_project_logos', icms::$module->config['display_project_logos']);
@@ -49,10 +60,57 @@ else // Align left
 
 if($projectObj && !$projectObj->isNew())
 {
+	$updated = $projectObj->getVar('date', 'e');	
 	$project = $projectObj->toArray();
+	$projects_tag_name = '';
+	
+	// Adjust logo path for template
 	if (!empty($project['logo']))
 	{
 		$project['logo'] = $document_root . 'uploads/' . $directory_name . '/project/' . $project['logo'];
+	}
+	
+	// Check if an 'updated' notice should be displayed. This works by comparing the time since the 
+	// project was last updated against the length of time that an updated notice should be shown
+	// (as set in the module preferences).
+	if (icms::$module->config['show_last_updated'] == TRUE)
+	{
+		$updated = strtotime($project['date']);
+		$update_periods = array(
+			0 => 0,
+			1 => 86400,		// Show updated notice for 1 day
+			2 => 259200,	// Show updated notice for 3 days
+			3 => 604800,	// Show updated notice for 1 week
+			4 => 1209600,	// Show updated notice for 2 weeks
+			5 => 1814400,	// Show updated notice for 3 weeks
+			6 => 2419200	// Show updated notice for 4 weeks
+			);
+		$updated_notice_period = $update_periods[icms::$module->config['updated_notice_period']];
+
+		if ((time() - $updated) < $updated_notice_period)
+		{
+			$project['date'] = date(icms::$module->config['date_format'], $updated);
+			$project['updated'] = TRUE;
+		}
+	}
+	
+	// Prepare tags for display
+	if ($sprocketsModule)
+	{
+		$project['tags'] = array();
+		$project_tag_array = $sprockets_taglink_handler->getTagsForObject($projectObj->getVar('project_id'), $projects_project_handler);
+		foreach ($project_tag_array as $key => $value)
+		{
+			$project['tags'][$value] = '<a href="' . PROJECTS_URL . 'completed_project.php?tag_id=' . $value 
+					. '">' . $sprockets_tag_buffer[$value]['title'] . '</a>';
+		}
+		$project['tags'] = implode(', ', $project['tags']);
+	}
+
+	// If the project is completed, add the completed flag to the breadcrumb title
+	if ($projectObj->getVar('complete', 'e') == 1)
+	{
+		$icmsTpl->assign("projects_completed_path", _CO_PROJECTS_PROJECT_COMPLETE);
 	}
 	
 	$icmsTpl->assign("projects_project", $project);
@@ -81,7 +139,7 @@ else
 		{
 			icms_loadLanguageFile("sprockets", "common");
 		}
-		
+
 		// Get a select box (if preferences allow, and only if Sprockets module installed)
 		if ($sprocketsModule && icms::$module->config['show_tag_select_box'] == '1')
 		{
@@ -94,7 +152,7 @@ else
 					$sprocketsModule->getVar('dirname'), 'sprockets');
 
 			// Prepare buffer to reduce queries
-			$tag_buffer = $sprockets_tag_handler->getObjects(null, true, false);
+			$tag_buffer = $sprockets_tag_handler->getObjects(NULL, TRUE, FALSE);
 
 			// Append the tag to the breadcrumb title
 			if (array_key_exists($clean_tag_id, $tag_buffer) && ($clean_tag_id !== 0))
@@ -135,8 +193,7 @@ else
 			$project_count = '';
 			$group_query = "SELECT count(*) FROM " . $projects_project_handler->table . ", "
 					. $sprockets_taglink_handler->table
-					. " WHERE `project_id` = `iid`"
-					. " AND `online_status` = '1'"
+					. " WHERE `online_status` = '1'"
 					. " AND `complete` = '1'"
 					. " AND `tid` = '" . $clean_tag_id . "'"
 					. " AND `mid` = '" . icms::$module->getVar('mid') . "'"
@@ -184,7 +241,6 @@ else
 			}
 			else
 			{
-
 				$rows = $projects_project_handler->convertResultSet($result, TRUE, FALSE);
 				foreach ($rows as $key => $row) 
 				{
@@ -211,12 +267,66 @@ else
 			$project_summaries = $projects_project_handler->getObjects($criteria, TRUE, FALSE);
 		}
 		
+		// Prepare tags. A list of project IDs is used to retrieve relevant taglinks. The taglinks
+		// are sorted into a multidimensional array, using the project ID as the key to each subarray.
+		// Then its just a case of assigning each subarray to the matching project.
+ 
+		// Prepare a list of project_id, this will be used to create a taglink buffer, which is used
+		// to create tag links for each project
+		$linked_project_ids = '';
+		foreach ($project_summaries as $key => $value) {
+			$linked_project_ids[] = $value['project_id'];
+		}
+		
+		if (!empty($linked_project_ids))
+		{
+			$linked_project_ids = '(' . implode(',', $linked_project_ids) . ')';
+
+			// Prepare multidimensional array of tag_ids with project_id (iid) as key
+			$taglink_buffer = $project_tag_id_buffer = array();
+			$criteria = new  icms_db_criteria_Compo();
+			$criteria->add(new icms_db_criteria_Item('mid', icms::$module->getVar('mid')));
+			$criteria->add(new icms_db_criteria_Item('item', 'project'));
+			$criteria->add(new icms_db_criteria_Item('iid', $linked_project_ids, 'IN'));
+			$taglink_buffer = $sprockets_taglink_handler->getObjects($criteria, TRUE, TRUE);
+			unset($criteria);
+
+			// Build tags, with URLs for navigation
+			foreach ($taglink_buffer as $key => $taglink) {
+
+				if (!array_key_exists($taglink->getVar('iid'), $project_tag_id_buffer)) {
+					$project_tag_id_buffer[$taglink->getVar('iid')] = array();
+				}
+				$project_tag_id_buffer[$taglink->getVar('iid')][] = '<a href="' . PROJECTS_URL . 
+						'completed_project.php?tag_id=' . $taglink->getVar('tid') . '">' 
+						. $sprockets_tag_buffer[$taglink->getVar('tid')]['title']
+						. '</a>';
+			}
+
+			// Convert the tag arrays into strings for easy handling in the template
+			foreach ($project_tag_id_buffer as $key => &$value) 
+			{
+				$value = implode(', ', $value);
+			}
+
+			// Assign each subarray of tags to the matching projects, using the item id as marker
+			foreach ($project_summaries as $key => &$value) {
+				if (!empty($project_tag_id_buffer[$value['project_id']]))
+				{
+					$value['tags'] = $project_tag_id_buffer[$value['project_id']];
+				}
+			}
+		}
+		
 		// Adjust the project logo paths to allow dynamic resizing as per the resized_image Smarty plugin
 		foreach ($project_summaries as &$project)
 		{
 			if (!empty($project['logo']))
 			$project['logo'] = $document_root . 'uploads/' . $directory_name . '/project/'
 				. $project['logo'];
+			
+			// Alter the itemUrl to point at the completed projects page, rather than the projects page
+			$project['itemUrl'] = str_replace('project.php', 'completed_project.php', $project['itemUrl']);
 		}
 		$icmsTpl->assign('project_summaries', $project_summaries);
 		
@@ -248,6 +358,22 @@ else
 	}
 }
 
-$icmsTpl->assign("show_breadcrumb", icms::$module->config['show_breadcrumb']);
-$icmsTpl->assign("projects_module_home", '<a href="' . ICMS_URL . "/modules/" . icms::$module->getVar("dirname") . '/">' . icms::$module->getVar("name") . "</a>");
+// Breadcrumb
+if (icms::$module->config['show_breadcrumb'])
+{
+	$icmsTpl->assign("show_breadcrumb", icms::$module->config['show_breadcrumb']);
+	$icmsTpl->assign("projects_module_home", '<a href="' . ICMS_URL . "/modules/" 
+			. icms::$module->getVar("dirname") . '/">' . icms::$module->getVar("name") . "</a>");
+	if ($projects_tag_name)
+	{
+		$icmsTpl->assign("projects_completed_path", '<a href="' . ICMS_URL . "/modules/" 
+				. icms::$module->getVar("dirname") . '/completed_project.php">' 
+				. _CO_PROJECTS_PROJECT_COMPLETE . "</a>");
+	}
+	else
+	{
+		$icmsTpl->assign("projects_completed_path", _CO_PROJECTS_PROJECT_COMPLETE);
+	}
+}
+		
 include_once "footer.php";

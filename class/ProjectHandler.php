@@ -33,7 +33,11 @@ class mod_projects_ProjectHandler extends icms_ipf_Handler
 	public function changeStatus($id, $field)
 	{
 		$status = '';
+		
+		// Load the object that will be manipulated
 		$projectObj = $this->get($id);
+		
+		// Change the relevant field
 		if ($projectObj->getVar($field, 'e') == true) {
 			$projectObj->setVar($field, 0);
 			$status = 0;
@@ -43,7 +47,7 @@ class mod_projects_ProjectHandler extends icms_ipf_Handler
 		}
 		$this->insert($projectObj, true);
 		
-		return $visibility;
+		return $status;
 	}
 	
 	/**
@@ -117,17 +121,14 @@ class mod_projects_ProjectHandler extends icms_ipf_Handler
 	 */
 	protected function afterSave(& $obj)
 	{
-		
 		$sprockets_taglink_handler = '';
 		$sprocketsModule = icms_getModuleInfo('sprockets');
-		
 		if ($sprocketsModule) 
-		{
+		{			
 			$sprockets_taglink_handler = icms_getModuleHandler('taglink', 
 					$sprocketsModule->getVar('dirname'), 'sprockets');
 			$sprockets_taglink_handler->storeTagsForObject($obj);
 		}
-
 		return true;
 	}
 	

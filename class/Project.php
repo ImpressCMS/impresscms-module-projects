@@ -33,7 +33,7 @@ class mod_projects_Project extends icms_ipf_seo_Object
 		$this->quickInitVar("extended_text", XOBJ_DTYPE_TXTAREA, FALSE);
 		$this->quickInitVar("contact_name", XOBJ_DTYPE_TXTBOX, FALSE);
 		$this->quickInitVar("contact_position", XOBJ_DTYPE_TXTBOX, FALSE);
-		$this->quickInitVar("contact_email", XOBJ_DTYPE_EMAIL, FALSE);
+		$this->quickInitVar("contact_email", XOBJ_DTYPE_TXTBOX, FALSE);
 		$this->quickInitVar("contact_phone", XOBJ_DTYPE_TXTBOX, FALSE);
 		$this->quickInitVar("contact_fax", XOBJ_DTYPE_TXTBOX, FALSE);
 		$this->quickInitVar("address", XOBJ_DTYPE_TXTAREA, FALSE);

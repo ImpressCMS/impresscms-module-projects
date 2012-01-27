@@ -93,6 +93,7 @@ if (in_array($clean_op, $valid_op, TRUE))
 			{
 				$changed = false;
 				$itemObj = $projects_project_handler->get($value);
+				$itemObj->loadTags();
 
 				if ($itemObj->getVar('weight', 'e') != $_POST['weight'][$key])
 				{
@@ -124,13 +125,13 @@ if (in_array($clean_op, $valid_op, TRUE))
 		case "changeComplete":
 			$completionStatus = $projects_project_handler->changeStatus($clean_project_id, 'complete');
 			$ret = '/modules/' . basename(dirname(dirname(__FILE__))) . '/admin/project.php';
-			if ($visibility == 0)
+			if ($completionStatus == 0)
 			{
-				redirect_header(ICMS_URL . $ret, 2, _AM_PROJECTS_PROJECT_COMPLETED);
+				redirect_header(ICMS_URL . $ret, 2, _AM_PROJECTS_PROJECT_ACTIVE);
 			}
 			else 
 			{
-				redirect_header(ICMS_URL . $ret, 2, _AM_PROJECTS_PROJECT_ACTIVE);
+				redirect_header(ICMS_URL . $ret, 2, _AM_PROJECTS_PROJECT_COMPLETED);
 			}
 			break;
 

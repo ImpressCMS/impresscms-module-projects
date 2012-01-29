@@ -148,21 +148,18 @@ else
 		{
 			// Initialise
 			$projects_tag_name = '';
-			$tag_buffer = $tagList = array();
+			$tagList = array();
 			$sprockets_tag_handler = icms_getModuleHandler('tag', $sprocketsModule->getVar('dirname'),
 					'sprockets');
 			$sprockets_taglink_handler = icms_getModuleHandler('taglink', 
 					$sprocketsModule->getVar('dirname'), 'sprockets');
 
-			// Prepare buffer to reduce queries
-			$tag_buffer = $sprockets_tag_handler->getObjects(null, TRUE, FALSE);
-
 			// Append the tag to the breadcrumb title
-			if (array_key_exists($clean_tag_id, $tag_buffer) && ($clean_tag_id !== 0))
+			if (array_key_exists($clean_tag_id, $sprockets_tag_buffer) && ($clean_tag_id !== 0))
 			{
-				$projects_tag_name = $tag_buffer[$clean_tag_id]['title'];
+				$projects_tag_name = $sprockets_tag_buffer[$clean_tag_id]['title'];
 				$icmsTpl->assign('projects_tag_name', $projects_tag_name);
-				$icmsTpl->assign('projects_category_path', $tag_buffer[$clean_tag_id]['title']);
+				$icmsTpl->assign('projects_category_path', $sprockets_tag_buffer[$clean_tag_id]['title']);
 			}
 			
 			// Load the tag navigation select box
@@ -176,9 +173,9 @@ else
 		// Append the tag name to the module title (if preferences allow, and only if Sprockets module installed)
 		if ($sprocketsModule && icms::$module->config['show_breadcrumb'] == FALSE)
 		{
-			if (array_key_exists($clean_tag_id, $tag_buffer) && ($clean_tag_id !== 0))
+			if (array_key_exists($clean_tag_id, $sprockets_tag_buffer) && ($clean_tag_id !== 0))
 			{
-				$projects_tag_name = $tag_buffer[$clean_tag_id]['title'];
+				$projects_tag_name = $sprockets_tag_buffer[$clean_tag_id]['title'];
 				$icmsTpl->assign('projects_tag_name', $projects_tag_name);
 			}
 		}

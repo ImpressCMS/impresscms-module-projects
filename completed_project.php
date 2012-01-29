@@ -285,7 +285,7 @@ else
 
 			// Prepare multidimensional array of tag_ids with project_id (iid) as key
 			$taglink_buffer = $project_tag_id_buffer = array();
-			$criteria = new  icms_db_criteria_Compo();
+			$criteria = new icms_db_criteria_Compo();
 			$criteria->add(new icms_db_criteria_Item('mid', icms::$module->getVar('mid')));
 			$criteria->add(new icms_db_criteria_Item('item', 'project'));
 			$criteria->add(new icms_db_criteria_Item('iid', $linked_project_ids, 'IN'));

@@ -167,7 +167,7 @@ function show_random_projects($options)
 		// Prepare multidimensional array of tag_ids with project_id (iid) as key
 		$taglink_buffer = $project_tag_id_buffer = array();
 		$criteria = new  icms_db_criteria_Compo();
-		$criteria->add(new icms_db_criteria_Item('mid', icms::$module->getVar('mid')));
+		$criteria->add(new icms_db_criteria_Item('mid', $projectsModule->getVar('mid')));
 		$criteria->add(new icms_db_criteria_Item('item', 'project'));
 		$criteria->add(new icms_db_criteria_Item('iid', $linked_project_ids, 'IN'));
 		$taglink_buffer = $sprockets_taglink_handler->getObjects($criteria, TRUE, TRUE);
@@ -243,11 +243,29 @@ function edit_random_projects($options)
 	if ($sprocketsModule)
 	{
 		$sprockets_tag_handler = icms_getModuleHandler('tag', $sprocketsModule->getVar('dirname'), 'sprockets');
+		$sprockets_taglink_handler = icms_getModuleHandler('taglink', $sprocketsModule->getVar('dirname'), 'sprockets');
+		
+		// Get only those tags that contain content from this module
+		$criteria = '';
+		$relevant_tag_ids = array();
+		$criteria = icms_buildCriteria(array('mid' => $projectsModule->getVar('mid')));
+		$projects_module_taglinks = $sprockets_taglink_handler->getObjects($criteria, TRUE, TRUE);
+		foreach ($projects_module_taglinks as $key => $value)
+		{
+			$relevant_tag_ids[] = $value->getVar('tid');
+		}
+		$relevant_tag_ids = array_unique($relevant_tag_ids);
+		$relevant_tag_ids = '(' . implode(',', $relevant_tag_ids) . ')';
+		unset($criteria);
+
+		$criteria = new icms_db_criteria_Compo();
+		$criteria->add(new icms_db_criteria_Item('tag_id', $relevant_tag_ids, 'IN'));
+		$tagList = $sprockets_tag_handler->getList($criteria);
+
+		$tagList = array(0 => _MB_PROJECTS_RANDOM_ALL) + $tagList;
 		$form .= '<tr><td>' . _MB_PROJECTS_RANDOM_TAG . '</td>';
 		// Parameters XoopsFormSelect: ($caption, $name, $value = null, $size = 1, $multiple = false)
 		$form_select = new XoopsFormSelect('', 'options[1]', $options[1], '1', FALSE);
-		$tagList = $sprockets_tag_handler->getList();
-		$tagList = array(0 => _MB_PROJECTS_RANDOM_ALL) + $tagList;
 		$form_select->addOptionArray($tagList);
 		$form .= '<td>' . $form_select->render() . '</td></tr>';
 	}

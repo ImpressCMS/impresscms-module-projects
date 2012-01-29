@@ -32,12 +32,12 @@ $script_name = getenv("SCRIPT_NAME");
 $document_root = str_replace('modules/' . $directory_name . '/completed_project.php', '', $script_name);
 
 // Optional tagging support (only if Sprockets module installed)
-$sprocketsModule = icms_getModuleInfo('sprockets');
+$sprocketsModule = icms::handler("icms_module")->getByDirname("sprockets");
 if ($sprocketsModule)
 {
 	icms_loadLanguageFile("sprockets", "common");
-	$sprockets_tag_handler = icms_getModuleHandler('tag', $sprocketsModule->getVar('dirname'), $sprocketsModule->getVar('name'));
-	$sprockets_taglink_handler = icms_getModuleHandler('taglink', $sprocketsModule->getVar('dirname'), $sprocketsModule->getVar('name'));
+	$sprockets_tag_handler = icms_getModuleHandler('tag', $sprocketsModule->getVar('dirname'), 'sprockets');
+	$sprockets_taglink_handler = icms_getModuleHandler('taglink', $sprocketsModule->getVar('dirname'), 'sprockets');
 	$sprockets_tag_buffer = $sprockets_tag_handler->getObjects(NULL, TRUE, FALSE);
 }
 
@@ -132,7 +132,6 @@ else
 		// View projects as list of summary descriptions
 		
 		$project_summaries = array();
-		$sprocketsModule = icms_getModuleInfo('sprockets');
 		
 		// Load Sprockets language file, if required, to stop nagging warning notices
 		if ($sprocketsModule)
@@ -274,47 +273,50 @@ else
  
 		// Prepare a list of project_id, this will be used to create a taglink buffer, which is used
 		// to create tag links for each project
-		$linked_project_ids = '';
-		foreach ($project_summaries as $key => $value) {
-			$linked_project_ids[] = $value['project_id'];
-		}
-		
-		if (!empty($linked_project_ids))
+		if ($sprocketsModule)
 		{
-			$linked_project_ids = '(' . implode(',', $linked_project_ids) . ')';
-
-			// Prepare multidimensional array of tag_ids with project_id (iid) as key
-			$taglink_buffer = $project_tag_id_buffer = array();
-			$criteria = new icms_db_criteria_Compo();
-			$criteria->add(new icms_db_criteria_Item('mid', icms::$module->getVar('mid')));
-			$criteria->add(new icms_db_criteria_Item('item', 'project'));
-			$criteria->add(new icms_db_criteria_Item('iid', $linked_project_ids, 'IN'));
-			$taglink_buffer = $sprockets_taglink_handler->getObjects($criteria, TRUE, TRUE);
-			unset($criteria);
-
-			// Build tags, with URLs for navigation
-			foreach ($taglink_buffer as $key => $taglink) {
-
-				if (!array_key_exists($taglink->getVar('iid'), $project_tag_id_buffer)) {
-					$project_tag_id_buffer[$taglink->getVar('iid')] = array();
-				}
-				$project_tag_id_buffer[$taglink->getVar('iid')][] = '<a href="' . PROJECTS_URL . 
-						'completed_project.php?tag_id=' . $taglink->getVar('tid') . '">' 
-						. $sprockets_tag_buffer[$taglink->getVar('tid')]['title']
-						. '</a>';
+			$linked_project_ids = '';
+			foreach ($project_summaries as $key => $value) {
+				$linked_project_ids[] = $value['project_id'];
 			}
 
-			// Convert the tag arrays into strings for easy handling in the template
-			foreach ($project_tag_id_buffer as $key => &$value) 
+			if (!empty($linked_project_ids))
 			{
-				$value = implode(', ', $value);
-			}
+				$linked_project_ids = '(' . implode(',', $linked_project_ids) . ')';
 
-			// Assign each subarray of tags to the matching projects, using the item id as marker
-			foreach ($project_summaries as $key => &$value) {
-				if (!empty($project_tag_id_buffer[$value['project_id']]))
+				// Prepare multidimensional array of tag_ids with project_id (iid) as key
+				$taglink_buffer = $project_tag_id_buffer = array();
+				$criteria = new icms_db_criteria_Compo();
+				$criteria->add(new icms_db_criteria_Item('mid', icms::$module->getVar('mid')));
+				$criteria->add(new icms_db_criteria_Item('item', 'project'));
+				$criteria->add(new icms_db_criteria_Item('iid', $linked_project_ids, 'IN'));
+				$taglink_buffer = $sprockets_taglink_handler->getObjects($criteria, TRUE, TRUE);
+				unset($criteria);
+
+				// Build tags, with URLs for navigation
+				foreach ($taglink_buffer as $key => $taglink) {
+
+					if (!array_key_exists($taglink->getVar('iid'), $project_tag_id_buffer)) {
+						$project_tag_id_buffer[$taglink->getVar('iid')] = array();
+					}
+					$project_tag_id_buffer[$taglink->getVar('iid')][] = '<a href="' . PROJECTS_URL . 
+							'completed_project.php?tag_id=' . $taglink->getVar('tid') . '">' 
+							. $sprockets_tag_buffer[$taglink->getVar('tid')]['title']
+							. '</a>';
+				}
+
+				// Convert the tag arrays into strings for easy handling in the template
+				foreach ($project_tag_id_buffer as $key => &$value) 
 				{
-					$value['tags'] = $project_tag_id_buffer[$value['project_id']];
+					$value = implode(', ', $value);
+				}
+
+				// Assign each subarray of tags to the matching projects, using the item id as marker
+				foreach ($project_summaries as $key => &$value) {
+					if (!empty($project_tag_id_buffer[$value['project_id']]))
+					{
+						$value['tags'] = $project_tag_id_buffer[$value['project_id']];
+					}
 				}
 			}
 		}

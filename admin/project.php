@@ -22,7 +22,7 @@ function editproject($project_id = 0)
 	global $projects_project_handler, $icmsModule, $icmsAdminTpl;
 
 	$projectObj = $projects_project_handler->get($project_id);
-	$sprocketsModule = icms_getModuleInfo('sprockets');
+	$sprocketsModule = icms::handler("icms_module")->getByDirname("sprockets");
 
 	if (!$projectObj->isNew())
 	{

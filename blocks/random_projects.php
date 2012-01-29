@@ -22,8 +22,8 @@ if (!defined("ICMS_ROOT_PATH")) die("ICMS root path not defined");
  */
 function show_random_projects($options)
 {
-	$projectsModule = icms_getModuleInfo('projects');
-	$sprocketsModule = icms_getModuleInfo('sprockets');
+	$projectsModule = icms::handler("icms_module")->getByDirname('projects');
+	$sprocketsModule = icms::handler("icms_module")->getByDirname("sprockets");
 	include_once(ICMS_ROOT_PATH . '/modules/' . $projectsModule->getVar('dirname') . '/include/common.php');
 	$projects_project_handler = icms_getModuleHandler('project', $projectsModule->getVar('dirname'), 'projects');
 	
@@ -228,7 +228,7 @@ function show_random_projects($options)
  */
 function edit_random_projects($options) 
 {
-	$projectsModule = icms_getModuleInfo('projects');
+	$projectsModule = icms::handler("icms_module")->getByDirname('projects');
 	include_once(ICMS_ROOT_PATH . '/modules/' . $projectsModule->getVar('dirname') . '/include/common.php');
 	include_once(ICMS_ROOT_PATH . '/class/xoopsform/formselect.php');
 	$projects_project_handler = icms_getModuleHandler('project', $projectsModule->getVar('dirname'), 'projects');
@@ -239,7 +239,7 @@ function edit_random_projects($options)
 	$form .= '<td>' . '<input type="text" name="options[0]" value="' . $options[0] . '"/></td>';
 	
 	// Optionally display results from a single tag - but only if sprockets module is installed
-	$sprocketsModule = icms_getModuleInfo('sprockets');
+	$sprocketsModule = icms::handler("icms_module")->getByDirname("sprockets");
 	if ($sprocketsModule)
 	{
 		$sprockets_tag_handler = icms_getModuleHandler('tag', $sprocketsModule->getVar('dirname'), 'sprockets');

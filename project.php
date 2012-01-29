@@ -31,12 +31,12 @@ $script_name = getenv("SCRIPT_NAME");
 $document_root = str_replace('modules/' . $directory_name . '/project.php', '', $script_name);
 
 // Optional tagging support (only if Sprockets module installed)
-$sprocketsModule = icms_getModuleInfo('sprockets');
+$sprocketsModule = icms::handler("icms_module")->getByDirname("sprockets");
 if ($sprocketsModule)
 {
 	icms_loadLanguageFile("sprockets", "common");
-	$sprockets_tag_handler = icms_getModuleHandler('tag', $sprocketsModule->getVar('dirname'), $sprocketsModule->getVar('name'));
-	$sprockets_taglink_handler = icms_getModuleHandler('taglink', $sprocketsModule->getVar('dirname'), $sprocketsModule->getVar('name'));
+	$sprockets_tag_handler = icms_getModuleHandler('tag', $sprocketsModule->getVar('dirname'), 'sprockets');
+	$sprockets_taglink_handler = icms_getModuleHandler('taglink', $sprocketsModule->getVar('dirname'), 'sprockets');
 	$sprockets_tag_buffer = $sprockets_tag_handler->getObjects(NULL, TRUE, FALSE);
 }
 

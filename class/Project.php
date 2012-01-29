@@ -23,17 +23,14 @@ class mod_projects_Project extends icms_ipf_seo_Object
 	{		
 		icms_ipf_object::__construct($handler);
 		
-		$sprocketsModule = icms_getModuleInfo('sprockets');
+		$sprocketsModule = icms::handler("icms_module")->getByDirname("sprockets");
 		
 		$this->quickInitVar("project_id", XOBJ_DTYPE_INT, TRUE);
 		$this->quickInitVar("title", XOBJ_DTYPE_TXTBOX, TRUE);
 		$this->quickInitVar("logo", XOBJ_DTYPE_IMAGE, FALSE);
 		$this->quickInitVar("website", XOBJ_DTYPE_TXTBOX, FALSE);
 		$this->quickInitVar("complete", XOBJ_DTYPE_TXTBOX, TRUE, FALSE, FALSE, 0);
-		if ($sprocketsModule)
-		{
-			$this->initNonPersistableVar('tag', XOBJ_DTYPE_INT, 'tag', false, false, false, true);
-		}
+		$this->initNonPersistableVar('tag', XOBJ_DTYPE_INT, 'tag', false, false, false, true);
 		$this->quickInitVar("description", XOBJ_DTYPE_TXTAREA, TRUE);
 		$this->quickInitVar("extended_text", XOBJ_DTYPE_TXTAREA, FALSE);
 		$this->quickInitVar("contact_name", XOBJ_DTYPE_TXTBOX, FALSE);
@@ -167,7 +164,6 @@ class mod_projects_Project extends icms_ipf_seo_Object
 	{
 		$ret = '';
 		
-		$sprocketsModule = icms_getModuleInfo('sprockets');
 		if ($sprocketsModule) {
 			$sprockets_taglink_handler = icms_getModuleHandler('taglink',
 					$sprocketsModule->getVar('dirname'), 'sprockets');

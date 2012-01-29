@@ -121,10 +121,10 @@ class mod_projects_ProjectHandler extends icms_ipf_Handler
 	 */
 	protected function afterSave(& $obj)
 	{
-		$sprockets_taglink_handler = '';
-		$sprocketsModule = icms_getModuleInfo('sprockets');
+		$sprocketsModule = icms::handler("icms_module")->getByDirname("sprockets");
 		if ($sprocketsModule) 
-		{			
+		{		
+			$sprockets_taglink_handler = '';
 			$sprockets_taglink_handler = icms_getModuleHandler('taglink', 
 					$sprocketsModule->getVar('dirname'), 'sprockets');
 			$sprockets_taglink_handler->storeTagsForObject($obj);
@@ -143,7 +143,7 @@ class mod_projects_ProjectHandler extends icms_ipf_Handler
 		$sprocketsModule = $notification_handler = $module_handler = $module = $module_id
 				= $category = $item_id = '';
 		
-		$sprocketsModule = icms_getModuleInfo('sprockets');
+		$sprocketsModule = icms::handler("icms_module")->getByDirname("sprockets");
 		
 		if ($sprocketsModule)
 		{

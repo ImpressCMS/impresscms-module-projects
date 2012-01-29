@@ -51,6 +51,7 @@ define("_CO_PROJECTS_PROJECT_WEIGHT_DSC", "Controls the sorting order. Lower wei
 define("_CO_PROJECTS_PROJECT_ONLINE_STATUS", "Online");
 define("_CO_PROJECTS_PROJECT_ONLINE_STATUS_DSC", "Set this project online (yes) or offline (no). Offline projects are not accessible from the user side.");
 define("_CO_PROJECTS_PROJECT_UPDATED", "Updated");
+define("_CO_PROJECTS_PROJECT_VIEWS", "views");
 define("_CO_PROJECTS_PROJECT_TAGS", "Tags:");
 
 // Tag select box

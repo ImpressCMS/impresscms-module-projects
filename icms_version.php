@@ -122,6 +122,14 @@ $modversion['config'][] = array(
 	'default' => '1');
 
 $modversion['config'][] = array(
+	'name' => 'show_view_counter',
+	'title' => '_MI_PROJECTS_SHOW_VIEW_COUNTER',
+	'description' => '_MI_PROJECTS_SHOW_VIEW_COUNTER_DSC',
+	'formtype' => 'yesno',
+	'valuetype' => 'int',
+	'default' => '1');
+
+$modversion['config'][] = array(
 	'name' => 'show_tag_select_box',
 	'title' => '_MI_PROJECTS_SHOW_TAG_SELECT_BOX',
 	'description' => '_MI_PROJECTS_SHOW_TAG_SELECT_BOX_DSC',

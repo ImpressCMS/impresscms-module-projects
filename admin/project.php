@@ -22,6 +22,7 @@ function editproject($project_id = 0)
 	global $projects_project_handler, $icmsModule, $icmsAdminTpl;
 
 	$projectObj = $projects_project_handler->get($project_id);
+	$sprocketsModule = icms_getModuleInfo('sprockets');
 
 	if (!$projectObj->isNew())
 	{
@@ -93,7 +94,7 @@ if (in_array($clean_op, $valid_op, TRUE))
 			{
 				$changed = false;
 				$itemObj = $projects_project_handler->get($value);
-				$itemObj->loadTags();
+				//$projectObj->loadTags();
 
 				if ($itemObj->getVar('weight', 'e') != $_POST['weight'][$key])
 				{

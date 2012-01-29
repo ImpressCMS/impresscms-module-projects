@@ -30,6 +30,8 @@ define("_MI_PROJECTS_SHOW_TAG_SELECT_BOX", "Show tag select box");
 define("_MI_PROJECTS_SHOW_TAG_SELECT_BOX_DSC", "Toggles the tag select box on/off for the projects index page (only if Sprockets module installed).");
 define("_MI_PROJECTS_SHOW_BREADCRUMB", "Show breadcrumb");
 define("_MI_PROJECTS_SHOW_BREADCRUMB_DSC", "Toggles the module breadcrumb on/off");
+define("_MI_PROJECTS_SHOW_VIEW_COUNTER", "Show views counter?");
+define("_MI_PROJECTS_SHOW_VIEW_COUNTER_DSC", "Toggles the visibility of the views counter field.");
 define("_MI_PROJECTS_SHOW_LAST_UPDATED", "Show date last updated?");
 define("_MI_PROJECTS_SHOW_LAST_UPDATED_DSC", "Labels a project as updated. Labels are good for one month");
 define("_MI_PROJECTS_DISPLAY_PROJECT_LOGOS", "Display project logos");

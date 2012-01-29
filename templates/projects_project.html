@@ -12,6 +12,10 @@
 			</div>
 		<{/if}>
 		<div class="itemInfo">
+			<{if $projects_project.counter}>
+				<{$projects_project.counter}> <{$smarty.const._CO_PROJECTS_PROJECT_VIEWS}>
+				<{if $projects_project.tags || $projects_project.updated}> | <{/if}>
+			<{/if}>
 			<{if $projects_project.tags}>
 				<{$smarty.const._CO_PROJECTS_PROJECT_TAGS}> <{$projects_project.tags}>
 			<{/if}>

@@ -62,6 +62,13 @@ if($projectObj && !$projectObj->isNew())
 	$updated = $projectObj->getVar('date', 'e');	
 	$project = $projectObj->toArray();
 	
+	// Update hit counter, check if it should be displayed or not
+	$projects_project_handler->updateCounter($projectObj);
+	if (icms::$module->config['show_view_counter'] == FALSE)
+	{
+		unset($project['counter']);
+	}
+	
 	// Adjust logo path for template
 	if (!empty($project['logo']))
 	{
@@ -91,7 +98,7 @@ if($projectObj && !$projectObj->isNew())
 			$project['updated'] = TRUE;
 		}
 	}
-	
+
 	// Prepare tags for display
 	if ($sprocketsModule)
 	{
@@ -273,7 +280,7 @@ else
 			$linked_project_ids[] = $value['project_id'];
 		}
 		
-		if (!empty($linked_project_ids))
+		if ($sprocketsModule && !empty($linked_project_ids))
 		{
 			$linked_project_ids = '(' . implode(',', $linked_project_ids) . ')';
 

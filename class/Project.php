@@ -171,6 +171,18 @@ class mod_projects_Project extends icms_ipf_seo_Object
 	{
 		$ret = '';
 		
+		if (!isset($sprocketsModule))
+		{
+			try
+			{
+				$sprocketsModule = icms::handler("icms_module")->getByDirname("sprockets");
+			}
+			catch (Exception $e)
+			{
+				// Continue: If Sprockets is installed but *deactivated* there is no need to stop
+			}
+		}
+		
 		if ($sprocketsModule && $sprocketsModule->getVar("isactive", "e") == 1) {
 			$sprockets_taglink_handler = icms_getModuleHandler('taglink',
 					$sprocketsModule->getVar('dirname'), 'sprockets');

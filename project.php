@@ -366,7 +366,7 @@ else
 		// View projects in compact table, optionally filter by tag
 		$tagged_project_list = '';
 		
-		if ($clean_tag_id) 
+		if ($clean_tag_id && $sprocketsModule && $sprocketsModule->getVar("isactive", "e") == 1) 
 		{
 			// Get a list of project IDs belonging to this tag
 			$criteria = new icms_db_criteria_Compo();

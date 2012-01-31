@@ -22,7 +22,14 @@ function editproject($project_id = 0)
 	global $projects_project_handler, $icmsModule, $icmsAdminTpl;
 
 	$projectObj = $projects_project_handler->get($project_id);
-	$sprocketsModule = icms::handler("icms_module")->getByDirname("sprockets");
+	try
+	{
+		$sprocketsModule = icms::handler("icms_module")->getByDirname("sprockets");
+	} 
+	catch (Exception $e) 
+	{
+		// Continue: If Sprockets is installed but *deactivated* there is no need to stop
+	}
 
 	if (!$projectObj->isNew())
 	{

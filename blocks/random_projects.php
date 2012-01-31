@@ -23,11 +23,18 @@ if (!defined("ICMS_ROOT_PATH")) die("ICMS root path not defined");
 function show_random_projects($options)
 {
 	$projectsModule = icms::handler("icms_module")->getByDirname('projects');
-	$sprocketsModule = icms::handler("icms_module")->getByDirname("sprockets");
+	try
+	{
+		$sprocketsModule = icms::handler("icms_module")->getByDirname("sprockets");
+	} 
+	catch (Exception $e) 
+	{
+		// Continue: If Sprockets is installed but *deactivated* there is no need to stop
+	}
 	include_once(ICMS_ROOT_PATH . '/modules/' . $projectsModule->getVar('dirname') . '/include/common.php');
 	$projects_project_handler = icms_getModuleHandler('project', $projectsModule->getVar('dirname'), 'projects');
 	
-	if ($sprocketsModule)
+	if ($sprocketsModule && $sprocketsModule->getVar("isactive", "e") == 1)
 	{
 		icms_loadLanguageFile("sprockets", "common");
 		$sprockets_taglink_handler = icms_getModuleHandler('taglink', $sprocketsModule->getVar('dirname'), 'sprockets');
@@ -37,7 +44,7 @@ function show_random_projects($options)
 	$projectList = $projects = array();
 
 	// Get a list of projects filtered by tag
-	if ($sprocketsModule && $options[1] != 0)
+	if ($sprocketsModule && $sprocketsModule->getVar("isactive", "e") == 1 && $options[1] != 0)
 	{
 		$query = "SELECT `project_id` FROM " . $projects_project_handler->table . ", "
 			. $sprockets_taglink_handler->table
@@ -156,7 +163,7 @@ function show_random_projects($options)
 		$linked_project_ids[] = $value['project_id'];
 	}
 	
-	if ($sprocketsModule && !empty($linked_project_ids))
+	if ($sprocketsModule && $sprocketsModule->getVar("isactive", "e") == 1 && !empty($linked_project_ids))
 	{
 		$linked_project_ids = '(' . implode(',', $linked_project_ids) . ')';
 		
@@ -239,8 +246,15 @@ function edit_random_projects($options)
 	$form .= '<td>' . '<input type="text" name="options[0]" value="' . $options[0] . '"/></td>';
 	
 	// Optionally display results from a single tag - but only if sprockets module is installed
-	$sprocketsModule = icms::handler("icms_module")->getByDirname("sprockets");
-	if ($sprocketsModule)
+	try
+	{
+		$sprocketsModule = icms::handler("icms_module")->getByDirname("sprockets");
+	} 
+	catch (Exception $e) 
+	{
+		// Continue: If Sprockets is installed but *deactivated* there is no need to stop
+	}
+	if ($sprocketsModule && $sprocketsModule->getVar("isactive", "e") == 1)
 	{
 		$sprockets_tag_handler = icms_getModuleHandler('tag', $sprocketsModule->getVar('dirname'), 'sprockets');
 		$sprockets_taglink_handler = icms_getModuleHandler('taglink', $sprocketsModule->getVar('dirname'), 'sprockets');

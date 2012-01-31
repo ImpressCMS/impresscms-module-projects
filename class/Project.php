@@ -23,7 +23,14 @@ class mod_projects_Project extends icms_ipf_seo_Object
 	{		
 		icms_ipf_object::__construct($handler);
 		
-		$sprocketsModule = icms::handler("icms_module")->getByDirname("sprockets");
+		try
+		{
+			$sprocketsModule = icms::handler("icms_module")->getByDirname("sprockets");
+		} 
+		catch (Exception $e) 
+		{
+			// Continue: If Sprockets is installed but *deactivated* there is no need to stop
+		}
 		
 		$this->quickInitVar("project_id", XOBJ_DTYPE_INT, TRUE);
 		$this->quickInitVar("title", XOBJ_DTYPE_TXTBOX, TRUE);
@@ -65,7 +72,7 @@ class mod_projects_Project extends icms_ipf_seo_Object
 		$this->setImageDir($url, $path);
 		
 		// Only display the tag field if the sprockets module is installed
-		if ($sprocketsModule)
+		if ($sprocketsModule && $sprocketsModule->getVar("isactive", "e") == 1)
 		{
 			$this->setControl('tag', array(
 			'name' => 'selectmulti',
@@ -164,7 +171,7 @@ class mod_projects_Project extends icms_ipf_seo_Object
 	{
 		$ret = '';
 		
-		if ($sprocketsModule) {
+		if ($sprocketsModule && $sprocketsModule->getVar("isactive", "e") == 1) {
 			$sprockets_taglink_handler = icms_getModuleHandler('taglink',
 					$sprocketsModule->getVar('dirname'), 'sprockets');
 			$ret = $sprockets_taglink_handler->getTagsForObject($this->id(), $this->handler);

@@ -147,7 +147,11 @@
 
 <!-- View project index as compact table -->
 <{if $projects_project_table}>
-	<h1><{$projects_title}></h1>
+	<div>
+		<{if $projects_tag_select_box}>
+			<{$projects_tag_select_box}>
+		<{/if}>
+	</div>
 	<{$projects_project_table}>
 <{/if}>
 

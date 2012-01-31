@@ -25,6 +25,20 @@ $projects_project_handler = icms_getModuleHandler("project", basename(dirname(__
 $criteria = icms_buildCriteria(array('online_status' => '1', 'complete' => '0'));
 $projectObj = $projects_project_handler->get($clean_project_id, TRUE, FALSE, $criteria);
 
+// Create a reference array of periods to display 'updated' notices
+if (icms::$module->config['show_last_updated'] == TRUE)
+{
+	$update_periods = array(
+		0 => 0,
+		1 => 86400,		// Show updated notice for 1 day
+		2 => 259200,	// Show updated notice for 3 days
+		3 => 604800,	// Show updated notice for 1 week
+		4 => 1209600,	// Show updated notice for 2 weeks
+		5 => 1814400,	// Show updated notice for 3 weeks
+		6 => 2419200	// Show updated notice for 4 weeks
+	);
+}
+
 // Get relative path to document root for this ICMS install. This is required to call the logos correctly if ICMS is installed in a subdirectory
 $directory_name = basename(dirname(__FILE__));
 $script_name = getenv("SCRIPT_NAME");
@@ -88,15 +102,6 @@ if($projectObj && !$projectObj->isNew())
 	if (icms::$module->config['show_last_updated'] == TRUE)
 	{
 		$updated = strtotime($project['date']);
-		$update_periods = array(
-			0 => 0,
-			1 => 86400,		// Show updated notice for 1 day
-			2 => 259200,	// Show updated notice for 3 days
-			3 => 604800,	// Show updated notice for 1 week
-			4 => 1209600,	// Show updated notice for 2 weeks
-			5 => 1814400,	// Show updated notice for 3 weeks
-			6 => 2419200	// Show updated notice for 4 weeks
-			);
 		$updated_notice_period = $update_periods[icms::$module->config['updated_notice_period']];
 
 		if ((time() - $updated) < $updated_notice_period)
@@ -138,44 +143,40 @@ if($projectObj && !$projectObj->isNew())
 else
 {
 	$icmsTpl->assign("projects_title", _MD_PROJECTS_ALL_PROJECTS);
-	if (icms::$module->config['index_display_mode'] == TRUE)
+	
+	// Get a select box (if preferences allow, and only if Sprockets module installed)
+	if ($sprocketsModule && $sprocketsModule->getVar("isactive", "e") == 1 && icms::$module->config['show_tag_select_box'] == TRUE)
 	{
-		// View projects as list of summary descriptions
-		
-		$project_summaries = $linked_project_ids = array();
-		
-		// Load Sprockets language file, if required, to stop nagging warning notices
-		if ($sprocketsModule && $sprocketsModule->getVar("isactive", "e") == 1)
-		{
-			icms_loadLanguageFile("sprockets", "common");
-		}
-		
-		// Get a select box (if preferences allow, and only if Sprockets module installed)
-		if ($sprocketsModule && $sprocketsModule->getVar("isactive", "e") == 1 && icms::$module->config['show_tag_select_box'] == TRUE)
-		{
-			// Initialise
-			$projects_tag_name = '';
-			$tagList = array();
-			$sprockets_tag_handler = icms_getModuleHandler('tag', $sprocketsModule->getVar('dirname'),
-					'sprockets');
-			$sprockets_taglink_handler = icms_getModuleHandler('taglink', 
-					$sprocketsModule->getVar('dirname'), 'sprockets');
+		// Initialise
+		$projects_tag_name = '';
+		$tagList = array();
+		$sprockets_tag_handler = icms_getModuleHandler('tag', $sprocketsModule->getVar('dirname'),
+				'sprockets');
+		$sprockets_taglink_handler = icms_getModuleHandler('taglink', 
+				$sprocketsModule->getVar('dirname'), 'sprockets');
 
-			// Append the tag to the breadcrumb title
-			if (array_key_exists($clean_tag_id, $sprockets_tag_buffer) && ($clean_tag_id !== 0))
-			{
-				$projects_tag_name = $sprockets_tag_buffer[$clean_tag_id]['title'];
-				$icmsTpl->assign('projects_tag_name', $projects_tag_name);
-				$icmsTpl->assign('projects_category_path', $sprockets_tag_buffer[$clean_tag_id]['title']);
-			}
-			
-			// Load the tag navigation select box
-			// $action, $selected = null, $zero_option_message = '---', 
-			// $navigation_elements_only = true, $module_id = null, $item = null,
-			$tag_select_box = $sprockets_tag_handler->getTagSelectBox('project.php', $clean_tag_id, 
-					_CO_PROJECTS_PROJECT_ALL_TAGS, TRUE, icms::$module->getVar('mid'));
-			$icmsTpl->assign('projects_tag_select_box', $tag_select_box);
+		// Append the tag to the breadcrumb title
+		if (array_key_exists($clean_tag_id, $sprockets_tag_buffer) && ($clean_tag_id !== 0))
+		{
+			$projects_tag_name = $sprockets_tag_buffer[$clean_tag_id]['title'];
+			$icmsTpl->assign('projects_tag_name', $projects_tag_name);
+			$icmsTpl->assign('projects_category_path', $sprockets_tag_buffer[$clean_tag_id]['title']);
 		}
+
+		// Load the tag navigation select box
+		// $action, $selected = null, $zero_option_message = '---', 
+		// $navigation_elements_only = true, $module_id = null, $item = null,
+		$tag_select_box = $sprockets_tag_handler->getTagSelectBox('project.php', $clean_tag_id, 
+				_CO_PROJECTS_PROJECT_ALL_TAGS, TRUE, icms::$module->getVar('mid'));
+		$icmsTpl->assign('projects_tag_select_box', $tag_select_box);
+	}
+	
+	///////////////////////////////////////////////////////////////////
+	////////// View projects as list of summary descriptions //////////
+	///////////////////////////////////////////////////////////////////
+	if (icms::$module->config['index_display_mode'] == TRUE)
+	{		
+		$project_summaries = $linked_project_ids = array();
 		
 		// Append the tag name to the module title (if preferences allow, and only if Sprockets module installed)
 		if ($sprocketsModule && $sprocketsModule->getVar("isactive", "e") == 1 && icms::$module->config['show_breadcrumb'] == FALSE)
@@ -330,15 +331,6 @@ else
 			if (icms::$module->config['show_last_updated'] == TRUE)
 			{
 				$updated = strtotime($project['date']);
-				$update_periods = array(
-					0 => 0,
-					1 => 86400,		// Show updated notice for 1 day
-					2 => 259200,	// Show updated notice for 3 days
-					3 => 604800,	// Show updated notice for 1 week
-					4 => 1209600,	// Show updated notice for 2 weeks
-					5 => 1814400,	// Show updated notice for 3 weeks
-					6 => 2419200	// Show updated notice for 4 weeks
-					);
 				$updated_notice_period = $update_periods[icms::$module->config['updated_notice_period']];
 				
 				if ((time() - $updated) < $updated_notice_period)
@@ -371,10 +363,32 @@ else
 	}
 	else 
 	{
-		// View projects in compact table
+		// View projects in compact table, optionally filter by tag
+		$tagged_project_list = '';
+		
+		if ($clean_tag_id) 
+		{
+			// Get a list of project IDs belonging to this tag
+			$criteria = new icms_db_criteria_Compo();
+			$criteria->add(new icms_db_criteria_Item('tid', $clean_tag_id));
+			$criteria->add(new icms_db_criteria_Item('mid', icms::$module->getVar('mid')));
+			$criteria->add(new icms_db_criteria_Item('item', 'project'));
+			$taglink_array = $sprockets_taglink_handler->getObjects($criteria);
+			foreach ($taglink_array as $taglink) {
+				$tagged_project_list[] = $taglink->getVar('iid');
+			}
+			$tagged_project_list = "('" . implode("','", $tagged_project_list) . "')";
+			unset($criteria);			
+		}
 		$criteria = new icms_db_criteria_Compo();
-		$criteria = new icms_db_criteria_Item('complete', '0');
+		if (!empty($tagged_project_list))
+		{
+			$criteria->add(new icms_db_criteria_Item('project_id', $tagged_project_list, 'IN'));
+		}
+		$criteria->add(new icms_db_criteria_Item('complete', '0'));
 		$criteria->add(new icms_db_criteria_Item('online_status', '1'));
+		
+		// Retrieve the table
 		$objectTable = new icms_ipf_view_Table($projects_project_handler, $criteria, array());
 		$objectTable->isForUserSide();
 		$objectTable->addColumn(new icms_ipf_view_Column("title"));

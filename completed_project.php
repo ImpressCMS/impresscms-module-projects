@@ -32,6 +32,7 @@ $script_name = getenv("SCRIPT_NAME");
 $document_root = str_replace('modules/' . $directory_name . '/completed_project.php', '', $script_name);
 
 // Optional tagging support (only if Sprockets module installed)
+$projects_tag_name = '';
 try
 {
 	$sprocketsModule = icms::handler("icms_module")->getByDirname("sprockets");
@@ -70,7 +71,6 @@ if($projectObj && !$projectObj->isNew())
 {
 	$updated = $projectObj->getVar('date', 'e');	
 	$project = $projectObj->toArray();
-	$projects_tag_name = '';
 	
 	// Adjust logo path for template
 	if (!empty($project['logo']))

@@ -22,7 +22,7 @@ $clean_start = isset($_GET["start"]) ? (int)($_GET["start"]) : 0;
 
 // Get the requested project, or retrieve the index page. Only show online projects
 $projects_project_handler = icms_getModuleHandler("project", basename(dirname(__FILE__)), "projects");
-$criteria = icms_buildCriteria(array('online_status' => '1', 'complete' => '1'));
+$criteria = icms_buildCriteria(array('online_status' => '1'));
 $projectObj = $projects_project_handler->get($clean_project_id, TRUE, FALSE, $criteria);
 
 // Get relative path to document root for this ICMS install. This is required to call the logos correctly if ICMS is installed in a subdirectory

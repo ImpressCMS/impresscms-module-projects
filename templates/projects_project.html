@@ -21,7 +21,7 @@
 			<{/if}>
 			<{if $projects_project.tags && $projects_project.updated}> | <{/if}>
 			<{if $projects_project.updated}>
-				<span class="projects_updated"><{$smarty.const._CO_PROJECTS_PROJECT_UPDATED}>: <{$projects_project.date}></span>
+				<span class="projects_updated"><{$smarty.const._CO_PROJECTS_PROJECT_UPDATED}>: <{$projects_project.last_update}></span>
 			<{/if}>
 		</div>
 		<{if $projects_project.logo && $display_project_logos}>
@@ -111,7 +111,7 @@
 				<{/if}>
 				<{if $project.tags && $project.updated}> | <{/if}>
 				<{if $project.updated}>
-					<span class="projects_updated"><{$smarty.const._CO_PROJECTS_PROJECT_UPDATED}>: <{$project.date}></span>
+					<span class="projects_updated"><{$smarty.const._CO_PROJECTS_PROJECT_UPDATED}>: <{$project.last_update}></span>
 				<{/if}>
 			</div>
 			<div>

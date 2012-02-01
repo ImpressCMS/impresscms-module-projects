@@ -23,7 +23,6 @@ $clean_start = isset($_GET["start"]) ? (int)($_GET["start"]) : 0;
 // Get the requested project, or retrieve the index page. Only show online projects
 $projects_project_handler = icms_getModuleHandler("project", basename(dirname(__FILE__)), "projects");
 $criteria = icms_buildCriteria(array('online_status' => '1', 'complete' => '1'));
-
 $projectObj = $projects_project_handler->get($clean_project_id, TRUE, FALSE, $criteria);
 
 // Get relative path to document root for this ICMS install. This is required to call the logos correctly if ICMS is installed in a subdirectory
@@ -32,10 +31,10 @@ $script_name = getenv("SCRIPT_NAME");
 $document_root = str_replace('modules/' . $directory_name . '/completed_project.php', '', $script_name);
 
 // Optional tagging support (only if Sprockets module installed)
-$projects_tag_name = '';
 $sprocketsModule = icms::handler("icms_module")->getByDirname("sprockets");
+$projects_tag_name = '';
 
-if (icms_get_module_status("sprockets") )
+if (icms_get_module_status("sprockets"))
 {
 	icms_loadLanguageFile("sprockets", "common");
 	$sprockets_tag_handler = icms_getModuleHandler('tag', $sprocketsModule->getVar('dirname'), 'sprockets');
@@ -62,37 +61,22 @@ else // Align left
 
 if($projectObj && !$projectObj->isNew())
 {
-	$updated = $projectObj->getVar('date', 'e');	
 	$project = $projectObj->toArray();
+	
+	// Update hit counter, check if it should be displayed or not
+	if (!icms_userIsAdmin(icms::$module->getVar('dirname')))
+	{
+		$projects_project_handler->updateCounter($projectObj);
+	}
+	if (icms::$module->config['show_view_counter'] == FALSE)
+	{
+		unset($project['counter']);
+	}
 	
 	// Adjust logo path for template
 	if (!empty($project['logo']))
 	{
 		$project['logo'] = $document_root . 'uploads/' . $directory_name . '/project/' . $project['logo'];
-	}
-	
-	// Check if an 'updated' notice should be displayed. This works by comparing the time since the 
-	// project was last updated against the length of time that an updated notice should be shown
-	// (as set in the module preferences).
-	if (icms::$module->config['show_last_updated'] == TRUE)
-	{
-		$updated = strtotime($project['date']);
-		$update_periods = array(
-			0 => 0,
-			1 => 86400,		// Show updated notice for 1 day
-			2 => 259200,	// Show updated notice for 3 days
-			3 => 604800,	// Show updated notice for 1 week
-			4 => 1209600,	// Show updated notice for 2 weeks
-			5 => 1814400,	// Show updated notice for 3 weeks
-			6 => 2419200	// Show updated notice for 4 weeks
-			);
-		$updated_notice_period = $update_periods[icms::$module->config['updated_notice_period']];
-
-		if ((time() - $updated) < $updated_notice_period)
-		{
-			$project['date'] = date(icms::$module->config['date_format'], $updated);
-			$project['updated'] = TRUE;
-		}
 	}
 	
 	// Prepare tags for display
@@ -125,56 +109,47 @@ if($projectObj && !$projectObj->isNew())
 ////////// VIEW PROJECT INDEX //////////
 ////////////////////////////////////////
 else
-{
-	$icmsTpl->assign("projects_title", _MD_PROJECTS_ALL_PROJECTS);
+{	
+	// Get a select box (if preferences allow, and only if Sprockets module installed)
+	if (icms_get_module_status("sprockets") && icms::$module->config['show_tag_select_box'] == TRUE)
+	{
+		// Initialise
+		$projects_tag_name = '';
+		$tagList = array();
+		$sprockets_tag_handler = icms_getModuleHandler('tag', $sprocketsModule->getVar('dirname'),
+				'sprockets');
+		$sprockets_taglink_handler = icms_getModuleHandler('taglink', 
+				$sprocketsModule->getVar('dirname'), 'sprockets');
+
+		// Append the tag to the breadcrumb title
+		if (array_key_exists($clean_tag_id, $sprockets_tag_buffer) && ($clean_tag_id !== 0))
+		{
+			$projects_tag_name = $sprockets_tag_buffer[$clean_tag_id]['title'];
+			$icmsTpl->assign('projects_tag_name', $projects_tag_name);
+			$icmsTpl->assign('projects_category_path', $sprockets_tag_buffer[$clean_tag_id]['title']);
+		}
+
+		// Load the tag navigation select box
+		// $action, $selected = null, $zero_option_message = '---', 
+		// $navigation_elements_only = true, $module_id = null, $item = null,
+		$tag_select_box = $sprockets_tag_handler->getTagSelectBox('completed_project.php', $clean_tag_id, 
+				_CO_PROJECTS_PROJECT_ALL_TAGS, TRUE, icms::$module->getVar('mid'));
+		$icmsTpl->assign('projects_tag_select_box', $tag_select_box);
+	}
 	
+	///////////////////////////////////////////////////////////////////
+	////////// View projects as list of summary descriptions //////////
+	///////////////////////////////////////////////////////////////////
 	if (icms::$module->config['index_display_mode'] == TRUE)
 	{
-		// View projects as list of summary descriptions
-		
-		$project_summaries = array();
-		
-		// Load Sprockets language file, if required, to stop nagging warning notices
-		if (icms_get_module_status("sprockets"))
-		{
-			icms_loadLanguageFile("sprockets", "common");
-		}
-
-		// Get a select box (if preferences allow, and only if Sprockets module installed)
-		if (icms_get_module_status("sprockets") && icms::$module->config['show_tag_select_box'] == '1')
-		{
-			// Initialise
-			$projects_tag_name = '';
-			$tag_buffer = $tagList = array();
-			$sprockets_tag_handler = icms_getModuleHandler('tag', $sprocketsModule->getVar('dirname'),
-					'sprockets');
-			$sprockets_taglink_handler = icms_getModuleHandler('taglink', 
-					$sprocketsModule->getVar('dirname'), 'sprockets');
-
-			// Prepare buffer to reduce queries
-			$tag_buffer = $sprockets_tag_handler->getObjects(NULL, TRUE, FALSE);
-
-			// Append the tag to the breadcrumb title
-			if (array_key_exists($clean_tag_id, $tag_buffer) && ($clean_tag_id !== 0))
-			{
-				$projects_tag_name = $tag_buffer[$clean_tag_id]['title'];
-				$icmsTpl->assign('projects_tag_name', $projects_tag_name);
-				$icmsTpl->assign('projects_category_path', $tag_buffer[$clean_tag_id]['title']);
-			}
-
-			// Load the tag navigation select box
-			// $action, $selected = null, $zero_option_message = '---', $navigation_elements_only = true, $module_id = null, $item = null
-			$tag_select_box = $sprockets_tag_handler->getTagSelectBox('completed_project.php', $clean_tag_id,
-					_CO_PROJECTS_PROJECT_ALL_TAGS, TRUE, icms::$module->getVar('mid'));
-			$icmsTpl->assign('projects_tag_select_box', $tag_select_box);
-		}
+		$project_summaries = $linked_project_ids = array();
 		
 		// Append the tag name to the module title (if preferences allow, and only if Sprockets module installed)
 		if (icms_get_module_status("sprockets") && icms::$module->config['show_breadcrumb'] == FALSE)
 		{
-			if (array_key_exists($clean_tag_id, $tag_buffer) && ($clean_tag_id !== 0))
+			if (array_key_exists($clean_tag_id, $sprockets_tag_buffer) && ($clean_tag_id !== 0))
 			{
-				$projects_tag_name = $tag_buffer[$clean_tag_id]['title'];
+				$projects_tag_name = $sprockets_tag_buffer[$clean_tag_id]['title'];
 				$icmsTpl->assign('projects_tag_name', $projects_tag_name);
 			}
 		}
@@ -189,7 +164,7 @@ else
 			$query = $rows = $project_count = '';
 			$linked_project_ids = array();
 			
-			// First, count the number of articles for the pagination control
+			// First, count the number of projects for the pagination control
 			$project_count = '';
 			$group_query = "SELECT count(*) FROM " . $projects_project_handler->table . ", "
 					. $sprockets_taglink_handler->table
@@ -205,8 +180,7 @@ else
 			if (!$result)
 			{
 				echo 'Error';
-				exit;
-				
+				exit;	
 			}
 			else
 			{
@@ -216,10 +190,9 @@ else
 					{
 						$project_count = $count;
 					}
-					
 				}
 			}
-
+			
 			// Secondly, get the projects
 			$query = "SELECT * FROM " . $projects_project_handler->table . ", "
 					. $sprockets_taglink_handler->table
@@ -230,8 +203,7 @@ else
 					. " AND `mid` = '" . icms::$module->getVar('mid') . "'"
 					. " AND `item` = 'project'"
 					. " ORDER BY `weight` ASC"
-					. " LIMIT " . $clean_start . ", " 
-					. icms::$module->config['number_of_projects_per_page'];
+					. " LIMIT " . $clean_start . ", " . icms::$module->config['number_of_projects_per_page'];
 
 			$result = icms::$xoopsDB->query($query);
 
@@ -271,60 +243,58 @@ else
 		// Prepare tags. A list of project IDs is used to retrieve relevant taglinks. The taglinks
 		// are sorted into a multidimensional array, using the project ID as the key to each subarray.
 		// Then its just a case of assigning each subarray to the matching project.
- 
+		 
 		// Prepare a list of project_id, this will be used to create a taglink buffer, which is used
 		// to create tag links for each project
-		if (icms_get_module_status("sprockets"))
+		$linked_project_ids = '';
+		foreach ($project_summaries as $key => $value) {
+			$linked_project_ids[] = $value['project_id'];
+		}
+		
+		if (icms_get_module_status("sprockets") && !empty($linked_project_ids))
 		{
-			$linked_project_ids = '';
-			foreach ($project_summaries as $key => $value) {
-				$linked_project_ids[] = $value['project_id'];
+			$linked_project_ids = '(' . implode(',', $linked_project_ids) . ')';
+
+			// Prepare multidimensional array of tag_ids with project_id (iid) as key
+			$taglink_buffer = $project_tag_id_buffer = array();
+			$criteria = new  icms_db_criteria_Compo();
+			$criteria->add(new icms_db_criteria_Item('mid', icms::$module->getVar('mid')));
+			$criteria->add(new icms_db_criteria_Item('item', 'project'));
+			$criteria->add(new icms_db_criteria_Item('iid', $linked_project_ids, 'IN'));
+			$taglink_buffer = $sprockets_taglink_handler->getObjects($criteria, TRUE, TRUE);
+			unset($criteria);
+
+			// Build tags, with URLs for navigation
+			foreach ($taglink_buffer as $key => $taglink) {
+
+				if (!array_key_exists($taglink->getVar('iid'), $project_tag_id_buffer)) {
+					$project_tag_id_buffer[$taglink->getVar('iid')] = array();
+				}
+				$project_tag_id_buffer[$taglink->getVar('iid')][] = '<a href="' . PROJECTS_URL . 
+						'completed_project.php?tag_id=' . $taglink->getVar('tid') . '">' 
+						. $sprockets_tag_buffer[$taglink->getVar('tid')]['title']
+						. '</a>';
 			}
 
-			if (!empty($linked_project_ids))
+			// Convert the tag arrays into strings for easy handling in the template
+			foreach ($project_tag_id_buffer as $key => &$value) 
 			{
-				$linked_project_ids = '(' . implode(',', $linked_project_ids) . ')';
+				$value = implode(', ', $value);
+			}
 
-				// Prepare multidimensional array of tag_ids with project_id (iid) as key
-				$taglink_buffer = $project_tag_id_buffer = array();
-				$criteria = new icms_db_criteria_Compo();
-				$criteria->add(new icms_db_criteria_Item('mid', icms::$module->getVar('mid')));
-				$criteria->add(new icms_db_criteria_Item('item', 'project'));
-				$criteria->add(new icms_db_criteria_Item('iid', $linked_project_ids, 'IN'));
-				$taglink_buffer = $sprockets_taglink_handler->getObjects($criteria, TRUE, TRUE);
-				unset($criteria);
-
-				// Build tags, with URLs for navigation
-				foreach ($taglink_buffer as $key => $taglink) {
-
-					if (!array_key_exists($taglink->getVar('iid'), $project_tag_id_buffer)) {
-						$project_tag_id_buffer[$taglink->getVar('iid')] = array();
-					}
-					$project_tag_id_buffer[$taglink->getVar('iid')][] = '<a href="' . PROJECTS_URL . 
-							'completed_project.php?tag_id=' . $taglink->getVar('tid') . '">' 
-							. $sprockets_tag_buffer[$taglink->getVar('tid')]['title']
-							. '</a>';
-				}
-
-				// Convert the tag arrays into strings for easy handling in the template
-				foreach ($project_tag_id_buffer as $key => &$value) 
+			// Assign each subarray of tags to the matching projects, using the item id as marker
+			foreach ($project_summaries as $key => &$value) {
+				if (!empty($project_tag_id_buffer[$value['project_id']]))
 				{
-					$value = implode(', ', $value);
-				}
-
-				// Assign each subarray of tags to the matching projects, using the item id as marker
-				foreach ($project_summaries as $key => &$value) {
-					if (!empty($project_tag_id_buffer[$value['project_id']]))
-					{
-						$value['tags'] = $project_tag_id_buffer[$value['project_id']];
-					}
+					$value['tags'] = $project_tag_id_buffer[$value['project_id']];
 				}
 			}
 		}
 		
-		// Adjust the project logo paths to allow dynamic resizing as per the resized_image Smarty plugin
+		// Prepare project for display
 		foreach ($project_summaries as &$project)
-		{
+		{			
+			// Ajust logo paths to allow dynamic image resizing
 			if (!empty($project['logo']))
 			$project['logo'] = $document_root . 'uploads/' . $directory_name . '/project/'
 				. $project['logo'];
@@ -351,10 +321,35 @@ else
 	}
 	else 
 	{
-		// View projects in compact table
+		//////////////////////////////////////////////////////////////////////////////
+		////////// View projects in compact table, optionally filter by tag //////////
+		//////////////////////////////////////////////////////////////////////////////
+		
+		$tagged_project_list = '';
+		
+		if ($clean_tag_id && icms_get_module_status("sprockets")) 
+		{
+			// Get a list of project IDs belonging to this tag
+			$criteria = new icms_db_criteria_Compo();
+			$criteria->add(new icms_db_criteria_Item('tid', $clean_tag_id));
+			$criteria->add(new icms_db_criteria_Item('mid', icms::$module->getVar('mid')));
+			$criteria->add(new icms_db_criteria_Item('item', 'project'));
+			$taglink_array = $sprockets_taglink_handler->getObjects($criteria);
+			foreach ($taglink_array as $taglink) {
+				$tagged_project_list[] = $taglink->getVar('iid');
+			}
+			$tagged_project_list = "('" . implode("','", $tagged_project_list) . "')";
+			unset($criteria);			
+		}
 		$criteria = new icms_db_criteria_Compo();
+		if (!empty($tagged_project_list))
+		{
+			$criteria->add(new icms_db_criteria_Item('project_id', $tagged_project_list, 'IN'));
+		}
 		$criteria->add(new icms_db_criteria_Item('complete', '1'));
 		$criteria->add(new icms_db_criteria_Item('online_status', '1'));
+		
+		// Retrieve the table
 		$objectTable = new icms_ipf_view_Table($projects_project_handler, $criteria, array());
 		$objectTable->isForUserSide();
 		$objectTable->addColumn(new icms_ipf_view_Column("title"));
@@ -379,5 +374,5 @@ if (icms::$module->config['show_breadcrumb'])
 		$icmsTpl->assign("projects_completed_path", _CO_PROJECTS_PROJECT_COMPLETE);
 	}
 }
-		
+
 include_once "footer.php";

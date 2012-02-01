@@ -41,6 +41,7 @@ class mod_projects_Project extends icms_ipf_seo_Object
 		$this->quickInitVar("address", XOBJ_DTYPE_TXTAREA, FALSE);
 		$this->quickInitVar("creator", XOBJ_DTYPE_INT, TRUE);
 		$this->quickInitVar("date", XOBJ_DTYPE_LTIME, TRUE);
+		$this->quickInitVar("last_update", XOBJ_DTYPE_LTIME, TRUE);
 		$this->quickInitVar("weight", XOBJ_DTYPE_INT, TRUE, FALSE, FALSE, 0);
 		$this->quickInitVar("online_status", XOBJ_DTYPE_INT, TRUE, FALSE, FALSE, 1);
 		$this->initCommonVar("counter");

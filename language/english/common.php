@@ -46,6 +46,8 @@ define("_CO_PROJECTS_PROJECT_CREATOR", "Submitter");
 define("_CO_PROJECTS_PROJECT_CREATOR_DSC", "The person who submitted this record.");
 define("_CO_PROJECTS_PROJECT_DATE", "Start date");
 define("_CO_PROJECTS_PROJECT_DATE_DSC", "Inception date of the project.");
+define("_CO_PROJECTS_PROJECT_LAST_UPDATE", "Last update");
+define("_CO_PROJECTS_PROJECT_LAST_UPDATE_DSC", "When a project is updated, an optional 'updated' notice can be displayed for a configurable period of time (see module preferences).");
 define("_CO_PROJECTS_PROJECT_WEIGHT", "Weight");
 define("_CO_PROJECTS_PROJECT_WEIGHT_DSC", "Controls the sorting order. Lower weights are listed first.");
 define("_CO_PROJECTS_PROJECT_ONLINE_STATUS", "Online");

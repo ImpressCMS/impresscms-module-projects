@@ -74,7 +74,6 @@ else // Align left
 
 if($projectObj && !$projectObj->isNew())
 {
-	$updated = $projectObj->getVar('date', 'e');	
 	$project = $projectObj->toArray();
 	
 	// Update hit counter, check if it should be displayed or not
@@ -98,12 +97,12 @@ if($projectObj && !$projectObj->isNew())
 	// (as set in the module preferences).
 	if (icms::$module->config['show_last_updated'] == TRUE)
 	{
-		$updated = strtotime($project['date']);
+		$updated = strtotime($project['last_update']);
 		$updated_notice_period = $update_periods[icms::$module->config['updated_notice_period']];
 
 		if ((time() - $updated) < $updated_notice_period)
 		{
-			$project['date'] = date(icms::$module->config['date_format'], $updated);
+			$project['last_update'] = date(icms::$module->config['date_format'], $updated);
 			$project['updated'] = TRUE;
 		}
 	}
@@ -138,9 +137,7 @@ if($projectObj && !$projectObj->isNew())
 ////////// VIEW PROJECT INDEX //////////
 ////////////////////////////////////////
 else
-{
-	$icmsTpl->assign("projects_title", _MD_PROJECTS_ALL_PROJECTS);
-	
+{	
 	// Get a select box (if preferences allow, and only if Sprockets module installed)
 	if (icms_get_module_status("sprockets") && icms::$module->config['show_tag_select_box'] == TRUE)
 	{
@@ -327,12 +324,12 @@ else
 		{
 			if (icms::$module->config['show_last_updated'] == TRUE)
 			{
-				$updated = strtotime($project['date']);
+				$updated = strtotime($project['last_update']);
 				$updated_notice_period = $update_periods[icms::$module->config['updated_notice_period']];
 				
 				if ((time() - $updated) < $updated_notice_period)
 				{
-					$project['date'] = date(icms::$module->config['date_format'], $updated);
+					$project['last_update'] = date(icms::$module->config['date_format'], $updated);
 					$project['updated'] = TRUE;
 				}
 			}
@@ -360,7 +357,10 @@ else
 	}
 	else 
 	{
-		// View projects in compact table, optionally filter by tag
+		//////////////////////////////////////////////////////////////////////////////
+		////////// View projects in compact table, optionally filter by tag //////////
+		//////////////////////////////////////////////////////////////////////////////
+		
 		$tagged_project_list = '';
 		
 		if ($clean_tag_id && icms_get_module_status("sprockets")) 

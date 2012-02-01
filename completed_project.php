@@ -33,16 +33,9 @@ $document_root = str_replace('modules/' . $directory_name . '/completed_project.
 
 // Optional tagging support (only if Sprockets module installed)
 $projects_tag_name = '';
-try
-{
-	$sprocketsModule = icms::handler("icms_module")->getByDirname("sprockets");
-} 
-catch (Exception $e) 
-{
-	// Continue: If Sprockets is installed but *deactivated* there is no need to stop
-}
+$sprocketsModule = icms::handler("icms_module")->getByDirname("sprockets");
 
-if ($sprocketsModule && $sprocketsModule->getVar("isactive", "e") == 1)
+if (icms_get_module_status("sprockets") )
 {
 	icms_loadLanguageFile("sprockets", "common");
 	$sprockets_tag_handler = icms_getModuleHandler('tag', $sprocketsModule->getVar('dirname'), 'sprockets');
@@ -103,7 +96,7 @@ if($projectObj && !$projectObj->isNew())
 	}
 	
 	// Prepare tags for display
-	if ($sprocketsModule && $sprocketsModule->getVar("isactive", "e") == 1)
+	if (icms_get_module_status("sprockets"))
 	{
 		$project['tags'] = array();
 		$project_tag_array = $sprockets_taglink_handler->getTagsForObject($projectObj->getVar('project_id'), $projects_project_handler);
@@ -142,13 +135,13 @@ else
 		$project_summaries = array();
 		
 		// Load Sprockets language file, if required, to stop nagging warning notices
-		if ($sprocketsModule && $sprocketsModule->getVar("isactive", "e") == 1)
+		if (icms_get_module_status("sprockets"))
 		{
 			icms_loadLanguageFile("sprockets", "common");
 		}
 
 		// Get a select box (if preferences allow, and only if Sprockets module installed)
-		if ($sprocketsModule && $sprocketsModule->getVar("isactive", "e") == 1 && icms::$module->config['show_tag_select_box'] == '1')
+		if (icms_get_module_status("sprockets") && icms::$module->config['show_tag_select_box'] == '1')
 		{
 			// Initialise
 			$projects_tag_name = '';
@@ -177,7 +170,7 @@ else
 		}
 		
 		// Append the tag name to the module title (if preferences allow, and only if Sprockets module installed)
-		if ($sprocketsModule && $sprocketsModule->getVar("isactive", "e") == 1 && icms::$module->config['show_breadcrumb'] == FALSE)
+		if (icms_get_module_status("sprockets") && icms::$module->config['show_breadcrumb'] == FALSE)
 		{
 			if (array_key_exists($clean_tag_id, $tag_buffer) && ($clean_tag_id !== 0))
 			{
@@ -187,7 +180,7 @@ else
 		}
 				
 		// Retrieve projects for a given tag
-		if ($clean_tag_id && $sprocketsModule && $sprocketsModule->getVar("isactive", "e") == 1)
+		if ($clean_tag_id && icms_get_module_status("sprockets"))
 		{
 			/**
 			 * Retrieve a list of projects JOINED to taglinks by project_id/tag_id/module_id/item
@@ -281,7 +274,7 @@ else
  
 		// Prepare a list of project_id, this will be used to create a taglink buffer, which is used
 		// to create tag links for each project
-		if ($sprocketsModule && $sprocketsModule->getVar("isactive", "e") == 1)
+		if (icms_get_module_status("sprockets"))
 		{
 			$linked_project_ids = '';
 			foreach ($project_summaries as $key => $value) {

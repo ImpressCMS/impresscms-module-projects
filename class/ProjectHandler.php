@@ -121,15 +121,9 @@ class mod_projects_ProjectHandler extends icms_ipf_Handler
 	 */
 	protected function afterSave(& $obj)
 	{
-		try
-		{
-			$sprocketsModule = icms::handler("icms_module")->getByDirname("sprockets");
-		} 
-		catch (Exception $e) 
-		{
-			// Continue: If Sprockets is installed but *deactivated* there is no need to stop
-		}
-		if ($sprocketsModule && $sprocketsModule->getVar("isactive", "e") == 1) 
+		$sprocketsModule = icms::handler("icms_module")->getByDirname("sprockets");
+
+		if (icms_get_module_status("sprockets")) 
 		{		
 			$sprockets_taglink_handler = '';
 			$sprockets_taglink_handler = icms_getModuleHandler('taglink', 
@@ -150,16 +144,9 @@ class mod_projects_ProjectHandler extends icms_ipf_Handler
 		$sprocketsModule = $notification_handler = $module_handler = $module = $module_id
 				= $category = $item_id = '';
 		
-		try
-		{
-			$sprocketsModule = icms::handler("icms_module")->getByDirname("sprockets");
-		} 
-		catch (Exception $e) 
-		{
-			// Continue: If Sprockets is installed but *deactivated* there is no need to stop
-		}
+		$sprocketsModule = icms::handler("icms_module")->getByDirname("sprockets");
 		
-		if ($sprocketsModule && $sprocketsModule->getVar("isactive", "e") == 1)
+		if (icms_get_module_status("sprockets"))
 		{
 			$sprockets_taglink_handler = icms_getModuleHandler('taglink',
 					$sprocketsModule->getVar('dirname'), 'sprockets');

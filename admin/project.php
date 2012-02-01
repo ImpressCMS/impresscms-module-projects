@@ -145,6 +145,7 @@ if (in_array($clean_op, $valid_op, TRUE))
 			$objectTable->addColumn(new icms_ipf_view_Column("title"));
 			$objectTable->addColumn(new icms_ipf_view_Column("date"));
 			$objectTable->addColumn(new icms_ipf_view_Column("last_update"));
+			$objectTable->addColumn(new icms_ipf_view_Column("counter"));
 			$objectTable->addColumn(new icms_ipf_view_Column('weight', 'center', TRUE, 'getWeightControl'));
 			$objectTable->addColumn(new icms_ipf_view_Column("online_status", "center", TRUE));
 			$objectTable->setDefaultSort('date');

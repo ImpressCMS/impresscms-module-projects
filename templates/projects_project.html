@@ -5,33 +5,43 @@
 	<div>
 		<{if $projects_project.website}>
 			<div>
-				<h1><a href="<{$projects_project.website}>"><{$projects_project.title}></h1>
+				<h2><a href="<{$projects_project.website}>"><{$projects_project.title}></a></h2>
 			</div>
 		<{else}>
 			<div><h2><{$projects_project.title}></h2>
 			</div>
 		<{/if}>
-		<div class="itemInfo">
-			<{if $projects_project.counter}>
-				<{$projects_project.counter}> <{$smarty.const._CO_PROJECTS_PROJECT_VIEWS}>
-				<{if $projects_project.tags || $projects_project.updated}> | <{/if}>
-			<{/if}>
-			<{if $projects_project.tags}>
-				<{$smarty.const._CO_PROJECTS_PROJECT_TAGS}> <{$projects_project.tags}>
-			<{/if}>
-			<{if $projects_project.tags && $projects_project.updated}> | <{/if}>
-			<{if $projects_project.updated}>
-				<span class="projects_updated"><{$smarty.const._CO_PROJECTS_PROJECT_UPDATED}>: <{$projects_project.last_update}></span>
-			<{/if}>
-		</div>
+		<{if $projects_project.counter || $projects_project.tags || $projects_project.updated}>
+			<div class="itemInfo">
+				<{if $projects_project.counter}>
+					<{$projects_project.counter}> <{$smarty.const._CO_PROJECTS_PROJECT_VIEWS}>
+					<{if $projects_project.tags || $projects_project.updated}> | <{/if}>
+				<{/if}>
+				<{if $projects_project.tags}>
+					<{$smarty.const._CO_PROJECTS_PROJECT_TAGS}> <{$projects_project.tags}>
+				<{/if}>
+				<{if $projects_project.tags && $projects_project.updated}> | <{/if}>
+				<{if $projects_project.updated}>
+					<span class="projects_updated"><{$smarty.const._CO_PROJECTS_PROJECT_UPDATED}>: <{$projects_project.last_update}></span>
+				<{/if}>
+			</div>
+		<{/if}>
 		<{if $projects_project.logo && $display_project_logos}>
 			<{if $freestyle_logo_dimensions}>
 				<div class="<{$project_logo_position}>">
-					<a href="<{$projects_project.website}>"><img src="<{$projects_project.logo}>" alt="<{$projects_project.title}>" /></a>
+					<{if $projects_project.website}>
+						<a href="<{$projects_project.website}>"><img src="<{$projects_project.logo}>" alt="<{$projects_project.title}>" /></a>
+					<{else}>
+						<img src="<{$projects_project.logo}>" alt="<{$projects_project.title}>" />
+					<{/if}>
 				</div>
 			<{else}>
 				<div class="<{$project_logo_position}>">
-					<a href="<{$projects_project.website}>"><{resized_image file=$projects_project.logo width=$logo_display_width height="999" fit="inside"}></a>
+					<{if $projects_project.website}>
+						<a href="<{$projects_project.website}>"><{resized_image file=$projects_project.logo width=$logo_display_width height="999" fit="inside"}></a>
+					<{else}>
+						<{resized_image file=$projects_project.logo width=$logo_display_width height="999" fit="inside"}>
+					<{/if}>
 				</div>
 			<{/if}>
 		<{/if}>

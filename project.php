@@ -73,14 +73,17 @@ else // Align left
 /////////////////////////////////////////
 
 if($projectObj && !$projectObj->isNew())
-{
-	$project = $projectObj->toArray();
-	
-	// Update hit counter, check if it should be displayed or not
+{	
+	// Update hit counter
 	if (!icms_userIsAdmin(icms::$module->getVar('dirname')))
 	{
 		$projects_project_handler->updateCounter($projectObj);
 	}
+	
+	// Convert object to array for easy insertion to templates
+	$project = $projectObj->toArray();
+	
+	// Check if hit counter should be displayed or not
 	if (icms::$module->config['show_view_counter'] == FALSE)
 	{
 		unset($project['counter']);

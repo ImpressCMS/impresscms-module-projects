@@ -378,4 +378,7 @@ if (icms::$module->config['show_breadcrumb'])
 	}
 }
 
+// Page title
+$icmsTpl->assign("projects_page_title", _CO_PROJECTS_COMPLETE_PROJECTS);
+
 include_once "footer.php";

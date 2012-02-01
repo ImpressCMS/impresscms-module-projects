@@ -123,7 +123,12 @@ if($projectObj && !$projectObj->isNew())
 	// If the project is completed, add the completed flag to the breadcrumb title
 	if ($projectObj->getVar('complete', 'e') == 1)
 	{
+		$icmsTpl->assign("projects_page_title", _CO_PROJECTS_COMPLETE_PROJECTS);
 		$icmsTpl->assign("projects_completed_path", _CO_PROJECTS_PROJECT_COMPLETE);
+	}
+	elseif ($projectObj->getVar('complete', 'e') == 0)
+	{
+		$icmsTpl->assign("projects_page_title", _CO_PROJECTS_ACTIVE_PROJECTS);
 	}
 	
 	$icmsTpl->assign("projects_project", $project);
@@ -164,6 +169,9 @@ else
 				_CO_PROJECTS_PROJECT_ALL_TAGS, TRUE, icms::$module->getVar('mid'));
 		$icmsTpl->assign('projects_tag_select_box', $tag_select_box);
 	}
+	
+	// Set the page title
+	$icmsTpl->assign("projects_page_title", _CO_PROJECTS_ACTIVE_PROJECTS);
 	
 	///////////////////////////////////////////////////////////////////
 	////////// View projects as list of summary descriptions //////////

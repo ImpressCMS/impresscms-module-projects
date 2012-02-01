@@ -58,3 +58,7 @@ define("_CO_PROJECTS_PROJECT_TAGS", "Tags:");
 
 // Tag select box
 define("_CO_PROJECTS_PROJECT_ALL_TAGS", "-- All projects --");
+
+// Page titles
+define("_CO_PROJECTS_COMPLETE_PROJECTS", "Completed projects");
+define("_CO_PROJECTS_ACTIVE_PROJECTS", "Projects");

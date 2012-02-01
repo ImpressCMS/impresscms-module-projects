@@ -12,7 +12,9 @@
 			<{/if}>
 	</div>
 <{else}>
-	<{if !$projects_project}>
-		<h1><{$smarty.const._CO_PROJECTS_PROJECTS}><{if $projects_tag_name}> - <{$projects_tag_name}><{/if}></h1>
+	<{if $projects_page_title}>
+		<h1>
+			<{$projects_page_title}><{if $projects_tag_name}> - <{$projects_tag_name}><{/if}>
+		</h1>
 	<{/if}>
 <{/if}>

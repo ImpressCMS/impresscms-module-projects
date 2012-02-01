@@ -84,7 +84,10 @@ if($projectObj && !$projectObj->isNew())
 	$project = $projectObj->toArray();
 	
 	// Update hit counter, check if it should be displayed or not
-	$projects_project_handler->updateCounter($projectObj);
+	if (!icms_userIsAdmin(icms::$module->getVar('dirname')))
+	{
+		$projects_project_handler->updateCounter($projectObj);
+	}
 	if (icms::$module->config['show_view_counter'] == FALSE)
 	{
 		unset($project['counter']);

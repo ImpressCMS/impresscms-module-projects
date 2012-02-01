@@ -140,10 +140,15 @@ if (in_array($clean_op, $valid_op, TRUE))
 			icms_cp_header();
 			$icmsModule->displayAdminMenu(0, _AM_PROJECTS_PROJECTS);
 			$objectTable = new icms_ipf_view_Table($projects_project_handler);
+			$objectTable->addQuickSearch('title');
 			$objectTable->addColumn(new icms_ipf_view_Column("complete", "center", TRUE));
 			$objectTable->addColumn(new icms_ipf_view_Column("title"));
+			$objectTable->addColumn(new icms_ipf_view_Column("date"));
+			$objectTable->addColumn(new icms_ipf_view_Column("last_update"));
 			$objectTable->addColumn(new icms_ipf_view_Column('weight', 'center', TRUE, 'getWeightControl'));
 			$objectTable->addColumn(new icms_ipf_view_Column("online_status", "center", TRUE));
+			$objectTable->setDefaultSort('date');
+			$objectTable->setDefaultOrder('DESC');
 			$objectTable->addIntroButton("addproject", "project.php?op=mod", _AM_PROJECTS_PROJECT_CREATE);
 			$objectTable->addActionButton("changeWeight", FALSE, _SUBMIT);
 			$objectTable->addFilter('complete', 'complete_filter');

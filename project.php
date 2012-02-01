@@ -388,7 +388,12 @@ else
 		// Retrieve the table
 		$objectTable = new icms_ipf_view_Table($projects_project_handler, $criteria, array());
 		$objectTable->isForUserSide();
+		$objectTable->addQuickSearch('title');
 		$objectTable->addColumn(new icms_ipf_view_Column("title"));
+		$objectTable->addColumn(new icms_ipf_view_Column("date"));
+		$objectTable->addColumn(new icms_ipf_view_Column("last_update"));
+		$objectTable->setDefaultSort('date');
+		$objectTable->setDefaultOrder('DESC');
 		$icmsTpl->assign("projects_project_table", $objectTable->fetch());
 	}
 }

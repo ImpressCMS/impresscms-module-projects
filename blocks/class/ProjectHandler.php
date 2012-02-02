@@ -26,7 +26,7 @@ class mod_projects_ProjectHandler extends icms_ipf_Handler
 	}
 
 	/**
-	 * Toggles a TRUE/TRUE field and updates the object
+	 * Toggles a TRUE/FALSE field and updates the object
 	 *
 	 * @return null
 	 */
@@ -108,7 +108,7 @@ class mod_projects_ProjectHandler extends icms_ipf_Handler
 			$criteria->add($criteriaKeywords);
 		}
 		
-		$criteria->add(new icms_db_criteria_Item('online_status', TRUE));
+		$criteria->add(new icms_db_criteria_Item('online_status', '1'));
 		
 		return $this->getObjects($criteria, TRUE, TRUE);
 	}

@@ -42,7 +42,7 @@ function icms_module_update_projects($module)
 
 	// create an uploads directory for logos
 	$path = ICMS_ROOT_PATH . '/uploads/' . basename(dirname(dirname(__FILE__)));
-	$directory_exists = $file_exists = $writeable = true;
+	$directory_exists = $file_exists = $writeable = TRUE;
 
 	// check if upload directory exists, make one if not, and write an empty index file
 	if (!is_dir($path)) {

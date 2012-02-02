@@ -30,7 +30,7 @@ class mod_projects_Project extends icms_ipf_seo_Object
 		$this->quickInitVar("logo", XOBJ_DTYPE_IMAGE, FALSE);
 		$this->quickInitVar("website", XOBJ_DTYPE_TXTBOX, FALSE);
 		$this->quickInitVar("complete", XOBJ_DTYPE_TXTBOX, TRUE, FALSE, FALSE, 0);
-		$this->initNonPersistableVar('tag', XOBJ_DTYPE_INT, 'tag', TRUE, TRUE, TRUE, TRUE);
+		$this->initNonPersistableVar('tag', XOBJ_DTYPE_INT, 'tag', FALSE, FALSE, FALSE, TRUE);
 		$this->quickInitVar("description", XOBJ_DTYPE_TXTAREA, TRUE);
 		$this->quickInitVar("extended_text", XOBJ_DTYPE_TXTAREA, FALSE);
 		$this->quickInitVar("contact_name", XOBJ_DTYPE_TXTBOX, FALSE);
@@ -120,7 +120,7 @@ class mod_projects_Project extends icms_ipf_seo_Object
 	public function complete()
 	{
 		$complete = $this->getVar('complete', 'e');
-		if ($complete == TRUE) 
+		if ($complete == FALSE) 
 		{
 			return '<a href="' . ICMS_URL . '/modules/' . basename(dirname(dirname(__FILE__)))
 				. '/admin/project.php?project_id=' . $this->getVar('project_id') . '&amp;op=changeComplete">
@@ -142,7 +142,7 @@ class mod_projects_Project extends icms_ipf_seo_Object
 	public function online_status()
 	{
 		$online_status = $this->getVar('online_status', 'e');
-		if ($online_status == TRUE) 
+		if ($online_status == FALSE) 
 		{
 			return '<a href="' . ICMS_URL . '/modules/' . basename(dirname(dirname(__FILE__)))
 				. '/admin/project.php?project_id=' . $this->getVar('project_id') . '&amp;op=visible">

@@ -266,7 +266,7 @@ function edit_random_projects($options)
 
 		$tagList = array(0 => _MB_PROJECTS_RANDOM_ALL) + $tagList;
 		$form .= '<tr><td>' . _MB_PROJECTS_RANDOM_TAG . '</td>';
-		// Parameters XoopsFormSelect: ($caption, $name, $value = null, $size = 1, $multiple = false)
+		// Parameters XoopsFormSelect: ($caption, $name, $value = null, $size = 1, $multiple = TRUE)
 		$form_select = new XoopsFormSelect('', 'options[1]', $options[1], '1', FALSE);
 		$form_select->addOptionArray($tagList);
 		$form .= '<td>' . $form_select->render() . '</td></tr>';

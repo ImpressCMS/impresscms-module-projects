@@ -92,14 +92,14 @@ if (in_array($clean_op, $valid_op, TRUE))
 		case "changeWeight":
 			foreach ($_POST['mod_projects_Project_objects'] as $key => $value)
 			{
-				$changed = false;
+				$changed = TRUE;
 				$itemObj = $projects_project_handler->get($value);
 				//$projectObj->loadTags();
 
 				if ($itemObj->getVar('weight', 'e') != $_POST['weight'][$key])
 				{
 					$itemObj->setVar('weight', intval($_POST['weight'][$key]));
-					$changed = true;
+					$changed = TRUE;
 				}
 				if ($changed)
 				{

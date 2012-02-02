@@ -124,13 +124,13 @@ class mod_projects_Project extends icms_ipf_seo_Object
 		{
 			return '<a href="' . ICMS_URL . '/modules/' . basename(dirname(dirname(__FILE__)))
 				. '/admin/project.php?project_id=' . $this->getVar('project_id') . '&amp;op=changeComplete">
-				<img src="../images/button_cancel.png" alt="Offline" /></a>';
+				<img src="../images/button_ok.png" alt="Online" /></a>';
 		}
 		else
 		{
 			return '<a href="' . ICMS_URL . '/modules/' . basename(dirname(dirname(__FILE__)))
 				. '/admin/project.php?project_id=' . $this->getVar('project_id') . '&amp;op=changeComplete">
-				<img src="../images/button_ok.png" alt="Online" /></a>';
+				<img src="../images/button_cancel.png" alt="Offline" /></a>';
 		}
 	}
 	
@@ -146,13 +146,13 @@ class mod_projects_Project extends icms_ipf_seo_Object
 		{
 			return '<a href="' . ICMS_URL . '/modules/' . basename(dirname(dirname(__FILE__)))
 				. '/admin/project.php?project_id=' . $this->getVar('project_id') . '&amp;op=visible">
-				<img src="../images/button_cancel.png" alt="Offline" /></a>';
+				<img src="../images/button_ok.png" alt="Online" /></a>';
 		}
 		else
 		{
 			return '<a href="' . ICMS_URL . '/modules/' . basename(dirname(dirname(__FILE__)))
 				. '/admin/project.php?project_id=' . $this->getVar('project_id') . '&amp;op=visible">
-				<img src="../images/button_ok.png" alt="Online" /></a>';
+				<img src="../images/button_cancel.png" alt="Offline" /></a>';
 		}
 	}
 	

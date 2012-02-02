@@ -43,7 +43,7 @@ style sheets do not work on cached blocks. I think this is a long-standing core 
 <{else}>
 	<ul>
 		<{foreach item = project from = $block.random_projects}>
-			<li>test</li>
+			<li><a href="<{$project.itemUrl}>"><{$project.title}></a></li>
 		<{/foreach}>
 	</ul>
 <{/if}>

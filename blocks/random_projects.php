@@ -234,19 +234,19 @@ function edit_random_projects($options)
 	$projects_project_handler = icms_getModuleHandler('project', $projectsModule->getVar('dirname'), 'projects');
 	
 	// Select number of random projects to display in the block
-	$form = '<table><tr>';
+	$form = '<table>';
 	$form .= '<tr><td>' . _MB_PROJECTS_RANDOM_LIMIT . '</td>';
-	$form .= '<td>' . '<input type="text" name="options[0]" value="' . $options[0] . '"/></td>';
+	$form .= '<td>' . '<input type="text" name="options[0]" value="' . $options[0] . '"/></td></tr>';
 	
 	// Randomise the projects? NB: Only works if you do not cache the block
 	$form .= '<tr><td>' . _MB_PROJECTS_RANDOM_OR_FIXED . '</td>';
-	$form .= '<td><input type="radio" name="options[2]" value="1"';
+	$form .= '<td><input type="radio" name="options[1]" value="1"';
 	if ($options[1] == 1) 
 	{
 		$form .= ' checked="checked"';
 	}
 	$form .= '/>' . _MB_PROJECTS_RANDOM_YES;
-	$form .= '<input type="radio" name="options[2]" value="0"';
+	$form .= '<input type="radio" name="options[1]" value="0"';
 	if ($options[1] == 0) 
 	{
 		$form .= 'checked="checked"';
@@ -255,17 +255,18 @@ function edit_random_projects($options)
 	
 	// Show project logos, or just a simple list?
 	$form .= '<tr><td>' . _MB_PROJECTS_LOGOS_OR_LIST . '</td>';
-	$form .= '<td><input type="radio" name="options[3]" value="1"';
+	$form .= '<td><input type="radio" name="options[2]" value="1"';
 	if ($options[2] == 1) 
 	{
 		$form .= ' checked="checked"';
 	}
 	$form .= '/>' . _MB_PROJECTS_RANDOM_YES;
-	$form .= '<input type="radio" name="options[3]" value="0"';
+	$form .= '<input type="radio" name="options[2]" value="0"';
 	if ($options[2] == 0) 
 	{
 		$form .= 'checked="checked"';
 	}
+	$form .= '/>' . _MB_PROJECTS_RANDOM_NO . '</td></tr>';		
 	
 	// Optionally display results from a single tag - but only if sprockets module is installed
 	$sprocketsModule = icms::handler("icms_module")->getByDirname("sprockets");
@@ -295,11 +296,11 @@ function edit_random_projects($options)
 		$tagList = array(0 => _MB_PROJECTS_RANDOM_ALL) + $tagList;
 		$form .= '<tr><td>' . _MB_PROJECTS_RANDOM_TAG . '</td>';
 		// Parameters icms_form_elements_Select: ($caption, $name, $value = null, $size = 1, $multiple = TRUE)
-		$form_select = new icms_form_elements_Select('', 'options[1]', $options[1], '1', FALSE);
+		$form_select = new icms_form_elements_Select('', 'options[3]', $options[3], '1', FALSE);
 		$form_select->addOptionArray($tagList);
 		$form .= '<td>' . $form_select->render() . '</td></tr>';
 	}
-	$form .= '/>' . _MB_PROJECTS_RANDOM_NO . '</td></tr>';
+	
 	$form .= '</table>';
 	
 	return $form;

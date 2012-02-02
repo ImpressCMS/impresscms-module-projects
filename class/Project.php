@@ -30,7 +30,7 @@ class mod_projects_Project extends icms_ipf_seo_Object
 		$this->quickInitVar("logo", XOBJ_DTYPE_IMAGE, FALSE);
 		$this->quickInitVar("website", XOBJ_DTYPE_TXTBOX, FALSE);
 		$this->quickInitVar("complete", XOBJ_DTYPE_TXTBOX, TRUE, FALSE, FALSE, 0);
-		$this->initNonPersistableVar('tag', XOBJ_DTYPE_INT, 'tag', TRUE, TRUE, TRUE, TRUE);
+		$this->initNonPersistableVar('tag', XOBJ_DTYPE_INT, 'tag', FALSE, FALSE, FALSE, TRUE);
 		$this->quickInitVar("description", XOBJ_DTYPE_TXTAREA, TRUE);
 		$this->quickInitVar("extended_text", XOBJ_DTYPE_TXTAREA, FALSE);
 		$this->quickInitVar("contact_name", XOBJ_DTYPE_TXTBOX, FALSE);

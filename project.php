@@ -267,6 +267,8 @@ else
 			$criteria = new icms_db_criteria_Compo();
 			$criteria->add(new icms_db_criteria_Item('complete', '0'));
 			$criteria->add(new icms_db_criteria_Item('online_status', '1'));
+			$criteria->setSort('weight');
+			$criteria->setOrder('ASC');
 
 			// Count the number of online projects for the pagination control
 			$project_count = $projects_project_handler->getCount($criteria);
@@ -395,6 +397,8 @@ else
 		}
 		$criteria->add(new icms_db_criteria_Item('complete', '0'));
 		$criteria->add(new icms_db_criteria_Item('online_status', '1'));
+		$criteria->setSort('weight');
+		$criteria->setOrder('ASC');
 		
 		// Retrieve the table
 		$objectTable = new icms_ipf_view_Table($projects_project_handler, $criteria, array());

@@ -87,6 +87,8 @@ function show_random_projects($options)
 	// Cut the project list down to the number of required entries and set the IDs as criteria
 	$project_list = array_slice($project_list, 0, $options[0], TRUE);
 	$criteria->add(new icms_db_criteria_Item('project_id', '(' . implode(',', $project_list) . ')', 'IN'));
+	$criteria->setSort('weight');
+	$criteria->setOrder('ASC');
 			
 	// Retrieve the projects and assign them to the block
 	$projects = $projects_project_handler->getObjects($criteria, TRUE, FALSE);

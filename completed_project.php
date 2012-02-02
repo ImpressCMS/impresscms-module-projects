@@ -337,6 +337,8 @@ else
 			$criteria->add(new icms_db_criteria_Item('tid', $clean_tag_id));
 			$criteria->add(new icms_db_criteria_Item('mid', icms::$module->getVar('mid')));
 			$criteria->add(new icms_db_criteria_Item('item', 'project'));
+			$criteria->setSort('weight');
+			$criteria->setOrder('ASC');
 			$taglink_array = $sprockets_taglink_handler->getObjects($criteria);
 			foreach ($taglink_array as $taglink) {
 				$tagged_project_list[] = $taglink->getVar('iid');
@@ -351,6 +353,8 @@ else
 		}
 		$criteria->add(new icms_db_criteria_Item('complete', '1'));
 		$criteria->add(new icms_db_criteria_Item('online_status', '1'));
+		$criteria->setSort('weight');
+		$criteria->setOrder('ASC');
 		
 		// Retrieve the table
 		$objectTable = new icms_ipf_view_Table($projects_project_handler, $criteria, array());

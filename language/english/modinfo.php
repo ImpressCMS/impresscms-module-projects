@@ -69,3 +69,6 @@ define("_MI_PROJECTS_FOUR_WEEKS", "Four weeks");
 
 // Submenu
 define("_MI_PROJECTS_COMPLETED", "Completed");
+
+// Manual
+define("_MI_PROJECTS_MANUAL", "Manual");

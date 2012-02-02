@@ -20,19 +20,22 @@ $module = icms::handler("icms_module")->getByDirname(basename(dirname(dirname(__
 
 $headermenu[] = array(
 	"title" => _CO_ICMS_GOTOMODULE,
-	"link" => ICMS_URL . "/modules/projects/");
+	"link" => ICMS_URL . "/modules/" . $module->getVar("dirname") . "/");
 $headermenu[] = array(
 	"title" => _PREFERENCES,
 	"link" => "../../system/admin.php?fct=preferences&amp;op=showmod&amp;mod=" . $module->getVar("mid"));
 $headermenu[] = array(
 	"title" => _MI_PROJECTS_TEMPLATES,
 	"link" => '../../system/admin.php?fct=tplsets&op=listtpl&tplset=' 
-		. $icmsConfig['template_set'] . '&moddir=' .$module->getVar("dirname"));	
+		. $icmsConfig['template_set'] . '&moddir=' . $module->getVar("dirname"));	
 $headermenu[] = array(
 	"title" => _CO_ICMS_UPDATE_MODULE,
-	"link" => ICMS_URL . "/modules/system/admin.php?fct=modulesadmin&amp;op=update&amp;module=" . basename(dirname(dirname(__FILE__))));
+	"link" => ICMS_URL . "/modules/system/admin.php?fct=modulesadmin&amp;op=update&amp;module=" . $module->getVar("dirname"));
 $headermenu[] = array(
 	"title" => _MODABOUT_ABOUT,
-	"link" => ICMS_URL . "/modules/projects/admin/about.php");
+	"link" => ICMS_URL . "/modules/" . $module->getVar("dirname") . "/admin/about.php");
+$headermenu[] = array(
+	"title" => _MI_PROJECTS_MANUAL,
+	"link" => ICMS_URL . "/modules/" . $module->getVar("dirname") . "/docs/projects_manual.pdf");
 
 unset($module_handler);

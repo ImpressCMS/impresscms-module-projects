@@ -38,8 +38,6 @@ function projects_db_upgrade_2() {
 
 function icms_module_update_projects($module)
 {
-	global $xoopsDB;
-
 	// create an uploads directory for logos
 	$path = ICMS_ROOT_PATH . '/uploads/' . basename(dirname(dirname(__FILE__)));
 	$directory_exists = $file_exists = $writeable = TRUE;

@@ -103,7 +103,7 @@ if (in_array($clean_op, $valid_op, TRUE))
 			break;
 			
 		case "visible":
-			$visibility = $projects_project_handler->changeStatus($clean_project_id, 'online_status');
+			$visibility = $projects_project_handler->toggleOnlineStatus($clean_project_id, 'online_status');
 			$ret = '/modules/' . basename(dirname(dirname(__FILE__))) . '/admin/project.php';
 			if ($visibility == 0)
 			{
@@ -116,7 +116,7 @@ if (in_array($clean_op, $valid_op, TRUE))
 			break;
 			
 		case "changeComplete":
-			$completionStatus = $projects_project_handler->changeStatus($clean_project_id, 'complete');
+			$completionStatus = $projects_project_handler->toggleCompletion($clean_project_id, 'complete');
 			$ret = '/modules/' . basename(dirname(dirname(__FILE__))) . '/admin/project.php';
 			if ($completionStatus == 0)
 			{

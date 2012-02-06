@@ -55,7 +55,6 @@ function icms_module_update_projects($module)
 			$contents = '<script>history.go(-1);</script>';
 			$handle = fopen($filename, 'wb');
 			$result = fwrite($handle, $contents);
-			echo 'result is: ' . $result;
 			fclose($handle);
 			chmod($path, 0644);
 		}

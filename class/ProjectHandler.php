@@ -26,24 +26,48 @@ class mod_projects_ProjectHandler extends icms_ipf_Handler
 	}
 
 	/**
-	 * Toggles a TRUE/TRUE field and updates the object
+	 * Toggles the online_status field and updates the object
 	 *
 	 * @return null
 	 */
-	public function changeStatus($id, $field)
+	public function toggleOnlineStatus($id)
 	{
 		$status = '';
 		
 		// Load the object that will be manipulated
 		$projectObj = $this->get($id);
-		$projectObj->loadTags();
 		
-		// Change the relevant field
-		if ($projectObj->getVar($field, 'e') == 1) {
-			$projectObj->setVar($field, 0);
+		// Toggle the online status field and update the object
+		if ($projectObj->getVar('online_status', 'e') == 1) {
+			$projectObj->setVar('online_status', 0);
 			$status = 0;
 		} else {
-			$projectObj->setVar($field, 1);
+			$projectObj->setVar('online_status', 1);
+			$status = 1;
+		}
+		$this->insert($projectObj, TRUE);
+		
+		return $status;
+	}
+	
+	/**
+	 * Toggles the completion field and updates the object
+	 *
+	 * @return null
+	 */
+	public function toggleCompletion($id)
+	{
+		$status = '';
+		
+		// Load the object that will be manipulated
+		$projectObj = $this->get($id);
+		
+		// Toggle the complete field and update the object
+		if ($projectObj->getVar('complete', 'e') == 1) {
+			$projectObj->setVar('complete', 0);
+			$status = 0;
+		} else {
+			$projectObj->setVar('complete', 1);
 			$status = 1;
 		}
 		$this->insert($projectObj, TRUE);
@@ -124,7 +148,11 @@ class mod_projects_ProjectHandler extends icms_ipf_Handler
 	{
 		$sprocketsModule = icms::handler("icms_module")->getByDirname("sprockets");
 
-		if (icms_get_module_status("sprockets")) 
+		// Only update the taglinks if the object is being updated from the add/edit form (POST).
+		// The taglinks should *not* be updated during a GET request (ie. when the toggle buttons
+		// are used to change the completion status or online status). Attempting to do so will 
+		// trigger an error, as the database should not be updated during a GET request.
+		if ($_SERVER['REQUEST_METHOD'] == 'POST' && icms_get_module_status("sprockets")) 
 		{		
 			$sprockets_taglink_handler = '';
 			$sprockets_taglink_handler = icms_getModuleHandler('taglink', 

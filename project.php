@@ -407,7 +407,7 @@ else
 		$objectTable->addColumn(new icms_ipf_view_Column("title"));
 		$objectTable->addColumn(new icms_ipf_view_Column("date"));
 		$objectTable->addColumn(new icms_ipf_view_Column("last_update"));
-		$objectTable->setDefaultSort('date');
+		$objectTable->setDefaultSort('weight');
 		$objectTable->setDefaultOrder('DESC');
 		$icmsTpl->assign("projects_project_table", $objectTable->fetch());
 	}

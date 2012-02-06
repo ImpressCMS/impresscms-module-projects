@@ -36,9 +36,10 @@ class mod_projects_ProjectHandler extends icms_ipf_Handler
 		
 		// Load the object that will be manipulated
 		$projectObj = $this->get($id);
+		$projectObj->loadTags();
 		
 		// Change the relevant field
-		if ($projectObj->getVar($field, 'e') == TRUE) {
+		if ($projectObj->getVar($field, 'e') == 1) {
 			$projectObj->setVar($field, 0);
 			$status = 0;
 		} else {

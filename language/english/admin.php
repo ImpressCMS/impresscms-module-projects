@@ -39,3 +39,5 @@ define("_AM_PROJECTS_PROJECT_COMPLETED", "Project marked complete");
 define("_AM_PROJECTS_PROJECT_ACTIVE", "Project marked active");
 define("_AM_PROJECTS_PROJECT_YES", "Yes");
 define("_AM_PROJECTS_PROJECT_NO", "No");
+define("_AM_PROJECTS_PROJECT_ALL_PROJECTS", "-- All projects --");
+define("_AM_PROJECTS_PROJECT_FILTER_BY_TAG", "Filter by tag");

@@ -54,6 +54,7 @@ if (isset($_GET["op"])) $clean_op = htmlentities($_GET["op"]);
 if (isset($_POST["op"])) $clean_op = htmlentities($_POST["op"]);
 
 $clean_project_id = isset($_GET["project_id"]) ? (int)$_GET["project_id"] : 0 ;
+$clean_tag_id = isset($_GET['tag_id']) ? (int)$_GET['tag_id'] : 0 ;
 
 if (in_array($clean_op, $valid_op, TRUE))
 {
@@ -131,7 +132,47 @@ if (in_array($clean_op, $valid_op, TRUE))
 		default:
 			icms_cp_header();
 			$icmsModule->displayAdminMenu(0, _AM_PROJECTS_PROJECTS);
-			$objectTable = new icms_ipf_view_Table($projects_project_handler);
+			
+			// display a tag select filter (if the Sprockets module is installed)
+			if (icms_get_module_status("sprockets")) {
+
+				$tag_select_box = '';
+				$taglink_array = $tagged_article_list = array();
+				$sprockets_tag_handler = icms_getModuleHandler('tag', 'sprockets', 'sprockets');
+				$sprockets_taglink_handler = icms_getModuleHandler('taglink', 'sprockets', 'sprockets');
+
+				$tag_select_box = $sprockets_tag_handler->getTagSelectBox('project.php', $clean_tag_id,
+					_AM_PROJECTS_PROJECT_ALL_PROJECTS, TRUE, icms::$module->getVar('mid'));
+				
+				if (!empty($tag_select_box)) {
+					echo '<h3>' . _AM_PROJECTS_PROJECT_FILTER_BY_TAG . '</h3>';
+					echo $tag_select_box;
+				}
+
+				if ($clean_tag_id) {
+
+					// get a list of project IDs belonging to this tag
+					$criteria = new icms_db_criteria_Compo();
+					$criteria->add(new icms_db_criteria_Item('tid', $clean_tag_id));
+					$criteria->add(new icms_db_criteria_Item('mid', icms::$module->getVar('mid')));
+					$criteria->add(new icms_db_criteria_Item('item', 'project'));
+					$taglink_array = $sprockets_taglink_handler->getObjects($criteria);
+					foreach ($taglink_array as $taglink) {
+						$tagged_project_list[] = $taglink->getVar('iid');
+					}
+					$tagged_project_list = "('" . implode("','", $tagged_project_list) . "')";
+
+					// use the list to filter the persistable table
+					$criteria = new icms_db_criteria_Compo();
+					$criteria->add(new icms_db_criteria_Item('project_id', $tagged_project_list, 'IN'));
+				}
+			}
+
+			if (empty($criteria)) {
+				$criteria = null;
+			}
+			
+			$objectTable = new icms_ipf_view_Table($projects_project_handler, $criteria);
 			$objectTable->addQuickSearch('title');
 			$objectTable->addColumn(new icms_ipf_view_Column("complete", "center", TRUE));
 			$objectTable->addColumn(new icms_ipf_view_Column("title"));

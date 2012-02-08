@@ -133,7 +133,14 @@ if (in_array($clean_op, $valid_op, TRUE))
 			icms_cp_header();
 			$icmsModule->displayAdminMenu(0, _AM_PROJECTS_PROJECTS);
 			
-			// display a tag select filter (if the Sprockets module is installed)
+			// Display a single project, if a project_id is set
+			if ($clean_project_id)
+			{
+				$projectObj = $projects_project_handler->get($clean_project_id);
+				$projectObj->displaySingleObject();
+			}
+			
+			// Display a tag select filter (if the Sprockets module is installed)
 			if (icms_get_module_status("sprockets")) {
 
 				$tag_select_box = '';
@@ -162,12 +169,12 @@ if (in_array($clean_op, $valid_op, TRUE))
 					}
 					$tagged_project_list = "('" . implode("','", $tagged_project_list) . "')";
 
-					// use the list to filter the persistable table
+					// Use the list to filter the persistable table
 					$criteria = new icms_db_criteria_Compo();
 					$criteria->add(new icms_db_criteria_Item('project_id', $tagged_project_list, 'IN'));
 				}
 			}
-
+			
 			if (empty($criteria)) {
 				$criteria = null;
 			}

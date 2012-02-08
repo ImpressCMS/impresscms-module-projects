@@ -142,7 +142,7 @@ if (in_array($clean_op, $valid_op, TRUE))
 				$sprockets_taglink_handler = icms_getModuleHandler('taglink', 'sprockets', 'sprockets');
 
 				$tag_select_box = $sprockets_tag_handler->getTagSelectBox('project.php', $clean_tag_id,
-					_AM_PROJECTS_PROJECT_ALL_PROJECTS, TRUE, icms::$module->getVar('mid'));
+					_AM_PROJECTS_PROJECT_ALL_PROJECTS, FALSE, icms::$module->getVar('mid'));
 				
 				if (!empty($tag_select_box)) {
 					echo '<h3>' . _AM_PROJECTS_PROJECT_FILTER_BY_TAG . '</h3>';

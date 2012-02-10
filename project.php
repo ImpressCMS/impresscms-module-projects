@@ -58,7 +58,6 @@ if (icms_get_module_status("sprockets"))
 // Assign common logo preferences to template
 $icmsTpl->assign('display_project_logos', icms::$module->config['display_project_logos']);
 $icmsTpl->assign('freestyle_logo_dimensions', icms::$module->config['freestyle_logo_dimensions']);
-$icmsTpl->assign('logo_display_width', icms::$module->config['logo_index_display_width']);
 if (icms::$module->config['project_logo_position'] == 1) // Align right
 {
 	$icmsTpl->assign('project_logo_position', 'projects_float_right');
@@ -89,7 +88,7 @@ if($projectObj && !$projectObj->isNew())
 		unset($project['counter']);
 	}
 	
-	// Adjust logo path for template
+	// Adjust logo for template
 	if (!empty($project['logo']))
 	{
 		$project['logo'] = $document_root . 'uploads/' . $directory_name . '/project/' . $project['logo'];
@@ -123,6 +122,9 @@ if($projectObj && !$projectObj->isNew())
 		$project['tags'] = implode(', ', $project['tags']);
 	}
 
+	// Set logo display width as per module preferences
+	$icmsTpl->assign('logo_display_width', icms::$module->config['logo_single_display_width']);
+	
 	// If the project is completed, add the completed flag to the breadcrumb title
 	if ($projectObj->getVar('complete', 'e') == 1)
 	{
@@ -362,6 +364,9 @@ else
 		{
 			$extra_arg = TRUE;
 		}
+		
+		// Set logo display width
+		$icmsTpl->assign('logo_display_width', icms::$module->config['logo_index_display_width']);
 		
 		// Pagination control
 		$pagenav = new icms_view_PageNav($project_count, icms::$module->config['number_of_projects_per_page'],

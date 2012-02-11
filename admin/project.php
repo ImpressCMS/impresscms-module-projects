@@ -87,7 +87,6 @@ if (in_array($clean_op, $valid_op, TRUE))
 			{
 				$changed = TRUE;
 				$itemObj = $projects_project_handler->get($value);
-				//$projectObj->loadTags();
 
 				if ($itemObj->getVar('weight', 'e') != $_POST['weight'][$key])
 				{

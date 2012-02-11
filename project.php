@@ -151,22 +151,6 @@ else
 	// Get a select box (if preferences allow, and only if Sprockets module installed)
 	if (icms_get_module_status("sprockets") && icms::$module->config['show_tag_select_box'] == TRUE)
 	{
-		// Initialise
-		$projects_tag_name = '';
-		$tagList = array();
-		$sprockets_tag_handler = icms_getModuleHandler('tag', $sprocketsModule->getVar('dirname'),
-				'sprockets');
-		$sprockets_taglink_handler = icms_getModuleHandler('taglink', 
-				$sprocketsModule->getVar('dirname'), 'sprockets');
-
-		// Append the tag to the breadcrumb title
-		if (array_key_exists($clean_tag_id, $sprockets_tag_buffer) && ($clean_tag_id !== 0))
-		{
-			$projects_tag_name = $sprockets_tag_buffer[$clean_tag_id]['title'];
-			$icmsTpl->assign('projects_tag_name', $projects_tag_name);
-			$icmsTpl->assign('projects_category_path', $sprockets_tag_buffer[$clean_tag_id]['title']);
-		}
-
 		// Load the tag navigation select box
 		// $action, $selected = null, $zero_option_message = '---', 
 		// $navigation_elements_only = TRUE, $module_id = null, $item = null,

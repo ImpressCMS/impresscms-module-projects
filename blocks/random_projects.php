@@ -135,7 +135,6 @@ function show_random_projects($options)
 		if (icms_getConfig('display_project_logos', $projectsModule->getVar('dirname')) == TRUE && !empty ($object['logo']))
 		{
 			$object['logo'] = ICMS_URL . '/uploads/' . $projectsModule->getVar('dirname') . '/project/' . $object['logo'];
-			echo $object['logo'];
 		}
 		else
 		{

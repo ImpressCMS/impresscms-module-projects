@@ -27,7 +27,7 @@
 			</div>
 		<{/if}>
 		<{if $projects_project.logo && $display_project_logos}>
-			<{if $freestyle_logo_dimensions}>
+			<{if $projects_freestyle_logo_dimensions}>
 				<div class="<{$project_logo_position}>">
 					<{if $projects_project.website}>
 						<a href="<{$projects_project.website}>"><img src="<{$projects_project.logo}>" alt="<{$projects_project.title}>" /></a>
@@ -38,9 +38,9 @@
 			<{else}>
 				<div class="<{$project_logo_position}>">
 					<{if $projects_project.website}>
-						<a href="<{$projects_project.website}>"><{resized_image file=$projects_project.logo width=$logo_display_width height="999" fit="inside"}></a>
+						<a href="<{$projects_project.website}>"><{resized_image file=$projects_project.logo width=$projects_logo_display_width height="999" fit="inside"}></a>
 					<{else}>
-						<{resized_image file=$projects_project.logo width=$logo_display_width height="999" fit="inside"}>
+						<{resized_image file=$projects_project.logo width=$projects_logo_display_width height="999" fit="inside"}>
 					<{/if}>
 				</div>
 			<{/if}>
@@ -126,7 +126,7 @@
 			</div>
 			<div>
 				<{if $project.logo && $display_project_logos}>
-					<{if $freestyle_logo_dimensions}>
+					<{if $projects_freestyle_logo_dimensions}>
 					
 						<div class="<{$project_logo_position}>">
 							<a href="<{$project.itemUrl}>"><img src="<{$project.logo}>" alt="<{$project.title}>" /></a>
@@ -135,7 +135,7 @@
 					<{else}>
 					
 						<div class="<{$project_logo_position}>">
-							<a href="<{$project.itemUrl}>"><{resized_image file=$project.logo width=$logo_display_width height="999" fit="inside"}></a>
+							<a href="<{$project.itemUrl}>"><{resized_image file=$project.logo width=$projects_logo_display_width height="999" fit="inside"}></a>
 						</div>
 					
 					<{/if}>

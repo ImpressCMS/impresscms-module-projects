@@ -20,7 +20,7 @@ style sheets do not work on cached blocks. I think this is a long-standing core 
 		</div>
 		<div>
 			<{if $project.logo}>
-				<{if $freestyle_logo_dimensions}>
+				<{if $projects_freestyle_logo_dimensions}>
 
 					<div style="<{$block.project_logo_position}>">
 						<a href="<{$project.itemUrl}>"><img src="<{$project.logo}>" alt="<{$project.title}>" /></a>
@@ -28,7 +28,7 @@ style sheets do not work on cached blocks. I think this is a long-standing core 
 
 				<{else}>
 					<div style="<{$block.project_logo_position}>">
-						<a href="<{$project.itemUrl}>"><{resized_image file=$project.logo width=$block.logo_block_display_width height="999" fit="inside"}></a>
+						<a href="<{$project.itemUrl}>"><{resized_image file=$project.logo width=$block.projects_logo_block_display_width height="999" fit="inside"}></a>
 					</div>
 
 				<{/if}>

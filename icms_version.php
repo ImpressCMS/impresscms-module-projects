@@ -98,7 +98,7 @@ $modversion['blocks'][1] = array(
 
 /** Preferences */
 $modversion['config'][1] = array(
-  'name' => 'index_display_mode',
+  'name' => 'projects_index_display_mode',
   'title' => '_MI_PROJECTS_INDEX_DISPLAY_MODE',
   'description' => '_MI_PROJECTS_INDEX_DISPLAY_MODE_DSC',
   'formtype' => 'yesno',
@@ -114,7 +114,7 @@ $modversion['config'][] = array(
   'default' =>  '5');
 
 $modversion['config'][] = array(
-	'name' => 'show_breadcrumb',
+	'name' => 'projects_show_breadcrumb',
 	'title' => '_MI_PROJECTS_SHOW_BREADCRUMB',
 	'description' => '_MI_PROJECTS_SHOW_BREADCRUMB_DSC',
 	'formtype' => 'yesno',
@@ -122,7 +122,7 @@ $modversion['config'][] = array(
 	'default' => '1');
 
 $modversion['config'][] = array(
-	'name' => 'show_view_counter',
+	'name' => 'projects_show_view_counter',
 	'title' => '_MI_PROJECTS_SHOW_VIEW_COUNTER',
 	'description' => '_MI_PROJECTS_SHOW_VIEW_COUNTER_DSC',
 	'formtype' => 'yesno',
@@ -130,7 +130,7 @@ $modversion['config'][] = array(
 	'default' => '1');
 
 $modversion['config'][] = array(
-	'name' => 'show_tag_select_box',
+	'name' => 'projects_show_tag_select_box',
 	'title' => '_MI_PROJECTS_SHOW_TAG_SELECT_BOX',
 	'description' => '_MI_PROJECTS_SHOW_TAG_SELECT_BOX_DSC',
 	'formtype' => 'yesno',
@@ -155,7 +155,7 @@ $modversion['config'][] = array(
 	'default' => 1);
 
 $modversion['config'][] = array(
-	'name' => 'freestyle_logo_dimensions',
+	'name' => 'projects_freestyle_logo_dimensions',
 	'title' => '_MI_PROJECTS_FREESTYLE_LOGO_DIMENSIONS',
 	'description' => '_MI_PROJECTS_FREESTYLE_LOGO_DIMENSIONS_DSC',
 	'formtype' => 'yesno',
@@ -163,7 +163,7 @@ $modversion['config'][] = array(
 	'default' => '0');
 
 $modversion['config'][] = array(
-  'name' => 'logo_index_display_width',
+  'name' => 'projects_logo_index_display_width',
   'title' => '_MI_PROJECTS_LOGO_INDEX_DISPLAY_WIDTH',
   'description' => '_MI_PROJECTS_LOGO_INDEX_DISPLAY_WIDTH_DSC',
   'formtype' => 'text',
@@ -171,7 +171,7 @@ $modversion['config'][] = array(
   'default' =>  '150');
 
 $modversion['config'][] = array(
-  'name' => 'logo_single_display_width',
+  'name' => 'projects_logo_single_display_width',
   'title' => '_MI_PROJECTS_LOGO_SINGLE_DISPLAY_WIDTH',
   'description' => '_MI_PROJECTS_LOGO_SINGLE_DISPLAY_WIDTH_DSC',
   'formtype' => 'text',
@@ -179,7 +179,7 @@ $modversion['config'][] = array(
   'default' =>  '300');
 
 $modversion['config'][] = array(
-  'name' => 'logo_block_display_width',
+  'name' => 'projects_logo_block_display_width',
   'title' => '_MI_PROJECTS_LOGO_BLOCK_DISPLAY_WIDTH',
   'description' => '_MI_PROJECTS_LOGO_BLOCK_DISPLAY_WIDTH_DSC',
   'formtype' => 'text',
@@ -187,7 +187,7 @@ $modversion['config'][] = array(
   'default' =>  '150');
 
 $modversion['config'][] = array(
-	'name' => 'logo_upload_height',
+	'name' => 'projects_logo_upload_height',
 	'title' => '_MI_PROJECTS_LOGO_UPLOAD_HEIGHT',
 	'description' => '_MI_PROJECTS_LOGO_UPLOAD_HEIGHT_DSC',
 	'formtype' => 'textbox',
@@ -195,7 +195,7 @@ $modversion['config'][] = array(
 	'default' =>  '500');
 
 $modversion['config'][] = array(
-	'name' => 'logo_upload_width',
+	'name' => 'projects_logo_upload_width',
 	'title' => '_MI_PROJECTS_LOGO_UPLOAD_WIDTH',
 	'description' => '_MI_PROJECTS_LOGO_UPLOAD_WIDTH_DSC',
 	'formtype' => 'textbox',
@@ -203,7 +203,7 @@ $modversion['config'][] = array(
 	'default' =>  '500');
 
 $modversion['config'][] = array(
-	'name' => 'logo_file_size',
+	'name' => 'projects_logo_file_size',
 	'title' => '_MI_PROJECTS_LOGO_FILE_SIZE',
 	'description' => '_MI_PROJECTS_LOGO_FILE_SIZE_DSC',
 	'formtype' => 'textbox',
@@ -211,7 +211,7 @@ $modversion['config'][] = array(
 	'default' =>  '2097152'); // 2MB default max upload size
 
 $modversion['config'][] = array(
-	'name' => 'show_last_updated',
+	'name' => 'projects_show_last_updated',
 	'title' => '_MI_PROJECTS_SHOW_LAST_UPDATED',
 	'description' => '_MI_PROJECTS_SHOW_LAST_UPDATED_DSC',
 	'formtype' => 'yesno',
@@ -219,7 +219,7 @@ $modversion['config'][] = array(
 	'default' => '1');
 
 $modversion['config'][] = array(
-  'name' => 'date_format',
+  'name' => 'projects_date_format',
   'title' => '_MI_PROJECTS_DATE_FORMAT',
   'description' => '_MI_PROJECTS_DATE_FORMAT_DSC',
   'formtype' => 'textbox',
@@ -227,7 +227,7 @@ $modversion['config'][] = array(
   'default' =>  'j/n/Y');
 
 $modversion['config'][] = array(
-  'name' => 'updated_notice_period',
+  'name' => 'projects_updated_notice_period',
   'title' => '_MI_PROJECTS_UPDATED_NOTICE_PERIOD',
   'description' => '_MI_PROJECTS_UPDATED_NOTICE_PERIOD_DSC',
   'formtype' => 'select',

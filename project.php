@@ -26,7 +26,7 @@ $criteria = icms_buildCriteria(array('online_status' => '1'));
 $projectObj = $projects_project_handler->get($clean_project_id, TRUE, FALSE, $criteria);
 
 // Create a reference array of periods to display 'updated' notices
-if (icms::$module->config['show_last_updated'] == TRUE)
+if (icms::$module->config['projects_show_last_updated'] == TRUE)
 {
 	$update_periods = array(
 		0 => 0,
@@ -57,7 +57,7 @@ if (icms_get_module_status("sprockets"))
 
 // Assign common logo preferences to template
 $icmsTpl->assign('display_project_logos', icms::$module->config['display_project_logos']);
-$icmsTpl->assign('freestyle_logo_dimensions', icms::$module->config['freestyle_logo_dimensions']);
+$icmsTpl->assign('projects_freestyle_logo_dimensions', icms::$module->config['projects_freestyle_logo_dimensions']);
 if (icms::$module->config['project_logo_position'] == 1) // Align right
 {
 	$icmsTpl->assign('project_logo_position', 'projects_float_right');
@@ -83,7 +83,7 @@ if($projectObj && !$projectObj->isNew())
 	$project = $projectObj->toArray();
 	
 	// Check if hit counter should be displayed or not
-	if (icms::$module->config['show_view_counter'] == FALSE)
+	if (icms::$module->config['projects_show_view_counter'] == FALSE)
 	{
 		unset($project['counter']);
 	}
@@ -97,14 +97,14 @@ if($projectObj && !$projectObj->isNew())
 	// Check if an 'updated' notice should be displayed. This works by comparing the time since the 
 	// project was last updated against the length of time that an updated notice should be shown
 	// (as set in the module preferences).
-	if (icms::$module->config['show_last_updated'] == TRUE)
+	if (icms::$module->config['projects_show_last_updated'] == TRUE)
 	{
 		$updated = strtotime($project['last_update']);
-		$updated_notice_period = $update_periods[icms::$module->config['updated_notice_period']];
+		$updated_notice_period = $update_periods[icms::$module->config['projects_updated_notice_period']];
 
 		if ((time() - $updated) < $updated_notice_period)
 		{
-			$project['last_update'] = date(icms::$module->config['date_format'], $updated);
+			$project['last_update'] = date(icms::$module->config['projects_date_format'], $updated);
 			$project['updated'] = TRUE;
 		}
 	}
@@ -123,7 +123,7 @@ if($projectObj && !$projectObj->isNew())
 	}
 
 	// Set logo display width as per module preferences
-	$icmsTpl->assign('logo_display_width', icms::$module->config['logo_single_display_width']);
+	$icmsTpl->assign('projects_logo_display_width', icms::$module->config['projects_logo_single_display_width']);
 	
 	// If the project is completed, add the completed flag to the breadcrumb title
 	if ($projectObj->getVar('complete', 'e') == 1)
@@ -149,7 +149,7 @@ if($projectObj && !$projectObj->isNew())
 else
 {	
 	// Get a select box (if preferences allow, and only if Sprockets module installed)
-	if (icms_get_module_status("sprockets") && icms::$module->config['show_tag_select_box'] == TRUE)
+	if (icms_get_module_status("sprockets") && icms::$module->config['projects_show_tag_select_box'] == TRUE)
 	{
 		// Load the tag navigation select box
 		// $action, $selected = null, $zero_option_message = '---', 
@@ -165,12 +165,12 @@ else
 	///////////////////////////////////////////////////////////////////
 	////////// View projects as list of summary descriptions //////////
 	///////////////////////////////////////////////////////////////////
-	if (icms::$module->config['index_display_mode'] == TRUE)
+	if (icms::$module->config['projects_index_display_mode'] == TRUE)
 	{		
 		$project_summaries = $linked_project_ids = array();
 		
 		// Append the tag name to the module title (if preferences allow, and only if Sprockets module installed)
-		if (icms_get_module_status("sprockets") && icms::$module->config['show_breadcrumb'] == FALSE)
+		if (icms_get_module_status("sprockets") && icms::$module->config['projects_show_breadcrumb'] == FALSE)
 		{
 			if (array_key_exists($clean_tag_id, $sprockets_tag_buffer) && ($clean_tag_id !== 0))
 			{
@@ -321,14 +321,14 @@ else
 		// Add 'updated' notices and adjust the logo paths to allow dynamic resizing, prepare tags for display
 		foreach ($project_summaries as &$project)
 		{
-			if (icms::$module->config['show_last_updated'] == TRUE)
+			if (icms::$module->config['projects_show_last_updated'] == TRUE)
 			{
 				$updated = strtotime($project['last_update']);
-				$updated_notice_period = $update_periods[icms::$module->config['updated_notice_period']];
+				$updated_notice_period = $update_periods[icms::$module->config['projects_updated_notice_period']];
 				
 				if ((time() - $updated) < $updated_notice_period)
 				{
-					$project['last_update'] = date(icms::$module->config['date_format'], $updated);
+					$project['last_update'] = date(icms::$module->config['projects_date_format'], $updated);
 					$project['updated'] = TRUE;
 				}
 			}
@@ -350,7 +350,7 @@ else
 		}
 		
 		// Set logo display width
-		$icmsTpl->assign('logo_display_width', icms::$module->config['logo_index_display_width']);
+		$icmsTpl->assign('projects_logo_display_width', icms::$module->config['projects_logo_index_display_width']);
 		
 		// Pagination control
 		$pagenav = new icms_view_PageNav($project_count, icms::$module->config['number_of_projects_per_page'],
@@ -402,6 +402,6 @@ else
 	}
 }
 
-$icmsTpl->assign("show_breadcrumb", icms::$module->config['show_breadcrumb']);
+$icmsTpl->assign("projects_show_breadcrumb", icms::$module->config['projects_show_breadcrumb']);
 $icmsTpl->assign("projects_module_home", '<a href="' . ICMS_URL . "/modules/" . icms::$module->getVar("dirname") . '/">' . icms::$module->getVar("name") . "</a>");
 include_once "footer.php";

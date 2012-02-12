@@ -44,8 +44,8 @@ if (icms_get_module_status("sprockets"))
 
 // Assign common logo preferences to template
 $icmsTpl->assign('display_project_logos', icms::$module->config['display_project_logos']);
-$icmsTpl->assign('freestyle_logo_dimensions', icms::$module->config['freestyle_logo_dimensions']);
-$icmsTpl->assign('logo_display_width', icms::$module->config['logo_index_display_width']);
+$icmsTpl->assign('projects_freestyle_logo_dimensions', icms::$module->config['projects_freestyle_logo_dimensions']);
+$icmsTpl->assign('projects_logo_display_width', icms::$module->config['projects_logo_index_display_width']);
 if (icms::$module->config['project_logo_position'] == 1) // Align right
 {
 	$icmsTpl->assign('project_logo_position', 'projects_float_right');
@@ -71,7 +71,7 @@ if($projectObj && !$projectObj->isNew())
 	$project = $projectObj->toArray();
 	
 	// Check if the hit counter should be displayed or not
-	if (icms::$module->config['show_view_counter'] == FALSE)
+	if (icms::$module->config['projects_show_view_counter'] == FALSE)
 	{
 		unset($project['counter']);
 	}
@@ -114,7 +114,7 @@ if($projectObj && !$projectObj->isNew())
 else
 {	
 	// Get a select box (if preferences allow, and only if Sprockets module installed)
-	if (icms_get_module_status("sprockets") && icms::$module->config['show_tag_select_box'] == TRUE)
+	if (icms_get_module_status("sprockets") && icms::$module->config['projects_show_tag_select_box'] == TRUE)
 	{
 		// Initialise
 		$projects_tag_name = '';
@@ -143,12 +143,12 @@ else
 	///////////////////////////////////////////////////////////////////
 	////////// View projects as list of summary descriptions //////////
 	///////////////////////////////////////////////////////////////////
-	if (icms::$module->config['index_display_mode'] == TRUE)
+	if (icms::$module->config['projects_index_display_mode'] == TRUE)
 	{
 		$project_summaries = $linked_project_ids = array();
 		
 		// Append the tag name to the module title (if preferences allow, and only if Sprockets module installed)
-		if (icms_get_module_status("sprockets") && icms::$module->config['show_breadcrumb'] == FALSE)
+		if (icms_get_module_status("sprockets") && icms::$module->config['projects_show_breadcrumb'] == FALSE)
 		{
 			if (array_key_exists($clean_tag_id, $sprockets_tag_buffer) && ($clean_tag_id !== 0))
 			{
@@ -368,9 +368,9 @@ else
 }
 
 // Breadcrumb
-if (icms::$module->config['show_breadcrumb'])
+if (icms::$module->config['projects_show_breadcrumb'])
 {
-	$icmsTpl->assign("show_breadcrumb", icms::$module->config['show_breadcrumb']);
+	$icmsTpl->assign("projects_show_breadcrumb", icms::$module->config['projects_show_breadcrumb']);
 	$icmsTpl->assign("projects_module_home", '<a href="' . ICMS_URL . "/modules/" 
 			. icms::$module->getVar("dirname") . '/">' . icms::$module->getVar("name") . "</a>");
 	if ($projects_tag_name)

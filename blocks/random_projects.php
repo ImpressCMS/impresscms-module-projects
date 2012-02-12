@@ -103,7 +103,7 @@ function show_random_projects($options)
 	// project was last updated against the length of time that an updated notice should be shown 
 	// (as set in the module preferences)
 	
-	if (icms_getConfig('show_last_updated', $projectsModule->getVar('dirname')))
+	if (icms_getConfig('projects_show_last_updated', $projectsModule->getVar('dirname')))
 	{
 		$update_periods = array(
 			0 => 0,
@@ -114,19 +114,19 @@ function show_random_projects($options)
 			5 => 1814400,	// Show updated notice for 3 weeks
 			6 => 2419200	// Show updated notice for 4 weeks
 			);
-		$updated_notice_period = $update_periods[icms_getConfig('updated_notice_period', $projectsModule->getVar('dirname'))];
+		$updated_notice_period = $update_periods[icms_getConfig('projects_updated_notice_period', $projectsModule->getVar('dirname'))];
 	}
 	
 	// Check if updated notices and view counter should be shown; update logo paths;
 	foreach ($projects as $key => &$object)
 	{
 		// Update notices
-		if (icms_getConfig('show_last_updated', $projectsModule->getVar('dirname')))
+		if (icms_getConfig('projects_show_last_updated', $projectsModule->getVar('dirname')))
 		{
 			$updated = strtotime($object['date']);
 			if ((time() - $updated) < $updated_notice_period)
 			{
-				$object['date'] = date(icms_getConfig('date_format', $projectsModule->getVar('dirname')), $updated);
+				$object['date'] = date(icms_getConfig('projects_date_format', $projectsModule->getVar('dirname')), $updated);
 				$object['updated'] = TRUE;
 			}
 		}
@@ -135,6 +135,7 @@ function show_random_projects($options)
 		if (icms_getConfig('display_project_logos', $projectsModule->getVar('dirname')) == TRUE && !empty ($object['logo']))
 		{
 			$object['logo'] = ICMS_URL . '/uploads/' . $projectsModule->getVar('dirname') . '/project/' . $object['logo'];
+			echo $object['logo'];
 		}
 		else
 		{
@@ -142,12 +143,12 @@ function show_random_projects($options)
 		}
 		
 		// View counter
-		if (icms_getConfig('show_view_counter') == FALSE)
+		if (icms_getConfig('projects_show_view_counter') == FALSE)
 		{
 			unset($object['counter']);
 		}
 	}
-	
+
 	// Prepare tags. A list of project IDs is used to retrieve relevant taglinks. The taglinks
 	// are sorted into a multidimensional array, using the project ID as the key to each subarray.
 	// Then its just a case of assigning each subarray to the matching project.
@@ -209,7 +210,7 @@ function show_random_projects($options)
 	// Assign to template
 	$block['random_projects'] = $projects;
 	$block['show_logos'] = $options[2];
-	$block['logo_block_display_width'] = icms_getConfig('logo_block_display_width', $projectsModule->getVar('dirname'));
+	$block['projects_logo_block_display_width'] = icms_getConfig('projects_logo_block_display_width', $projectsModule->getVar('dirname'));
 	if (icms_getConfig('project_logo_position', $projectsModule->getVar('dirname') == 1)) // Align right
 	{
 		$block['project_logo_position'] = 'float:right; margin: 0em 0em 1em 1em;';
@@ -218,7 +219,7 @@ function show_random_projects($options)
 	{
 		$block['project_logo_position'] = 'float:left; margin: 0em 1em 1em 0em;';
 	}
-	$block['freestyle_logo_dimensions'] = icms_getConfig('freestyle_logo_dimensions', $projectsModule->getVar('dirname'));
+	$block['projects_freestyle_logo_dimensions'] = icms_getConfig('projects_freestyle_logo_dimensions', $projectsModule->getVar('dirname'));
 
 	return $block;
 }

@@ -34,10 +34,10 @@ $modversion = array(
 
 /**  Development information */
 	"status_version"			=> "1.0",
-	"status"					=> "Release candidate 1",
-	"date"						=> "6/2/2012",
+	"status"					=> "Release candidate 3",
+	"date"						=> "12/2/2012",
 	"author_word"				=> "For ICMS 1.3+ and 2.0 only.",
-	"warning"					=> "Release candidate 2",
+	"warning"					=> "Release candidate 3",
 
 /** Contributors */
 	"developer_website_url"		=> "https://www.isengard.biz",

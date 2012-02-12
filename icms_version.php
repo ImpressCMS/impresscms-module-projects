@@ -152,7 +152,7 @@ $modversion['config'][] = array(
 	'formtype' => 'select',
 	'valuetype' => 'int',
 	'options' => array('_MI_PROJECTS_LEFT' => 0, '_MI_PROJECTS_RIGHT' => 1),
-	'default' => 0);
+	'default' => 1);
 
 $modversion['config'][] = array(
 	'name' => 'freestyle_logo_dimensions',

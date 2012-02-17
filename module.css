@@ -36,6 +36,10 @@ cached blocks (core bug?). So if you want to alter the block CSS, you'll find it
 }
 
 /* Used to prevent projects overlapping logos of others on the index page */
+.projects_no_overflow
+{
+	overflow:auto;
+}
 .projects_clear
 {
 	clear:both;

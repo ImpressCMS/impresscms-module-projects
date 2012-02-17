@@ -114,37 +114,38 @@
 		</div>
 		
 		<{foreach item = project from = $project_summaries}>
-			<h2 class="projects_separator projects_clear"><a href="<{$project.itemUrl}>"><{$project.title}></a></h2>
-			<div class="itemInfo">
-				<{if $project.tags}>
-					<{$smarty.const._CO_PROJECTS_PROJECT_TAGS}> <{$project.tags}>
-				<{/if}>
-				<{if $project.tags && $project.updated}> | <{/if}>
-				<{if $project.updated}>
-					<span class="projects_updated"><{$smarty.const._CO_PROJECTS_PROJECT_UPDATED}>: <{$project.last_update}></span>
-				<{/if}>
-			</div>
-			<div>
-				<{if $project.logo && $display_project_logos}>
-					<{if $projects_freestyle_logo_dimensions}>
-					
-						<div class="<{$project_logo_position}>">
-							<a href="<{$project.itemUrl}>"><img src="<{$project.logo}>" alt="<{$project.title}>" /></a>
-						</div>
-					
-					<{else}>
-					
-						<div class="<{$project_logo_position}>">
-							<a href="<{$project.itemUrl}>"><{resized_image file=$project.logo width=$projects_logo_display_width height="999" fit="inside"}></a>
-						</div>
-					
+			<div class="projects_no_overflow">
+				<h2 class="projects_separator"><a href="<{$project.itemUrl}>"><{$project.title}></a></h2>
+				<div class="itemInfo">
+					<{if $project.tags}>
+						<{$smarty.const._CO_PROJECTS_PROJECT_TAGS}> <{$project.tags}>
 					<{/if}>
-				<{/if}>
+					<{if $project.tags && $project.updated}> | <{/if}>
+					<{if $project.updated}>
+						<span class="projects_updated"><{$smarty.const._CO_PROJECTS_PROJECT_UPDATED}>: <{$project.last_update}></span>
+					<{/if}>
+				</div>
 				<div>
-					<p><{$project.description}></p>
+					<{if $project.logo && $display_project_logos}>
+						<{if $projects_freestyle_logo_dimensions}>
+
+							<div class="<{$project_logo_position}>">
+								<a href="<{$project.itemUrl}>"><img src="<{$project.logo}>" alt="<{$project.title}>" /></a>
+							</div>
+
+						<{else}>
+
+							<div class="<{$project_logo_position}>">
+								<a href="<{$project.itemUrl}>"><{resized_image file=$project.logo width=$projects_logo_display_width height="999" fit="inside"}></a>
+							</div>
+
+						<{/if}>
+					<{/if}>
+					<div>
+						<p><{$project.description}></p>
+					</div>
 				</div>
 			</div>
-		
 		<{/foreach}>
 
 		<!-- Pagination control -->

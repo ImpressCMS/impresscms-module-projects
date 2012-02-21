@@ -4,7 +4,7 @@ style sheets do not work on cached blocks. I think this is a long-standing core 
 <!-- Summary mode -->
 <{if $block.show_logos == TRUE}>
 	<{foreach item = project from = $block.random_projects}>
-		<h2 style="clear:both; margin-bottom:1em;"><a href="<{$project.itemUrl}>"><{$project.title}></a></h2>
+		<h2 style="overflow:auto; margin-bottom:1em;"><a href="<{$project.itemUrl}>"><{$project.title}></a></h2>
 		<div class="itemInfo">
 			<{if $project.counter}>
 				<{$project.counter}> <{$smarty.const._CO_PROJECTS_PROJECT_VIEWS}>

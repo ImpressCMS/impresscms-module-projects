@@ -164,7 +164,7 @@ class mod_projects_Project extends icms_ipf_seo_Object
 		$short_url = $this->short_url();
 		if (!empty($short_url))
 		{
-			$seo_url = '<a href="' . $this->getItemLink(TRUE) . '&amp;page=' . $this->short_url() 
+			$seo_url = '<a href="' . $this->getItemLink(TRUE) . '&amp;title=' . $this->short_url() 
 					. '">' . $this->getVar('title', 'e') . '</a>';
 		}
 		else

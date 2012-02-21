@@ -117,7 +117,10 @@ function show_random_projects($options)
 		$updated_notice_period = $update_periods[icms_getConfig('projects_updated_notice_period', $projectsModule->getVar('dirname'))];
 	}
 	
-	// Check if updated notices and view counter should be shown; update logo paths;
+	// Check if updated notices and view counter should be shown
+	// Update logo paths
+	// Add SEO string to URL
+	// Show view counter
 	foreach ($projects as $key => &$object)
 	{
 		// Update notices
@@ -139,6 +142,12 @@ function show_random_projects($options)
 		else
 		{
 			unset($object['logo']);
+		}
+		
+		// Add SEO friendly string to URL
+		if (!empty($object['short_url']))
+		{
+			$object['itemUrl'] .= "&amp;title=" . $object['short_url'];
 		}
 		
 		// View counter

@@ -70,6 +70,12 @@ if($projectObj && !$projectObj->isNew())
 	// Convert object to array for easy insertion into templates
 	$project = $projectObj->toArray();
 	
+	// Add SEO friendly string to URL
+	if (!empty($project['short_url']))
+	{
+		$project['itemUrl'] .= "&amp;title=" . $project['short_url'];
+	}
+	
 	// Check if the hit counter should be displayed or not
 	if (icms::$module->config['projects_show_view_counter'] == FALSE)
 	{
@@ -302,6 +308,12 @@ else
 			$project['logo'] = $document_root . 'uploads/' . $directory_name . '/project/'
 				. $project['logo'];
 			
+			// Add SEO friendly string to URL
+			if (!empty($project['short_url']))
+			{
+				$project['itemUrl'] .= "&amp;title=" . $project['short_url'];
+			}
+			
 			// Alter the itemUrl to point at the completed projects page, rather than the projects page
 			$project['itemUrl'] = str_replace('project.php', 'completed_project.php', $project['itemUrl']);
 		}
@@ -360,7 +372,7 @@ else
 		$objectTable = new icms_ipf_view_Table($projects_project_handler, $criteria, array());
 		$objectTable->isForUserSide();
 		$objectTable->addQuickSearch('title');
-		$objectTable->addColumn(new icms_ipf_view_Column("title"));
+		$objectTable->addColumn(new icms_ipf_view_Column("title", _GLOBAL_LEFT, FALSE, addSEOStringToItemUrl));
 		$objectTable->addColumn(new icms_ipf_view_Column("date"));
 		$objectTable->addColumn(new icms_ipf_view_Column("last_update"));
 		$icmsTpl->assign("projects_project_table", $objectTable->fetch());

@@ -85,7 +85,7 @@ if($projectObj && !$projectObj->isNew())
 	// Add SEO friendly string to URL
 	if (!empty($project['short_url']))
 	{
-		$project['itemUrl'] .= "&amp;page=" . $project['short_url'];
+		$project['itemUrl'] .= "&amp;title=" . $project['short_url'];
 	}
 	
 	// Check if hit counter should be displayed or not
@@ -346,7 +346,7 @@ else
 			// Add SEO friendly string to URL
 			if (!empty($project['short_url']))
 			{
-				$project['itemUrl'] .= "&amp;page=" . $project['short_url'];
+				$project['itemUrl'] .= "&amp;title=" . $project['short_url'];
 			}
 			
 		}

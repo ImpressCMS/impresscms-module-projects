@@ -1,0 +1,4 @@
+<{if $projects_project_title}><h1><{$projects_project_title}></h1><{/if}>
+<{if $projects_project_info}><p><{$projects_project_info}></p><{/if}>
+<{if $projects_project_table}><{$projects_project_table}><{/if}>
+<{if $addproject}><{includeq file='db:system_common_form.html' form=$addproject}><{/if}>

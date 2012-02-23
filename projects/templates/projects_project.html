@@ -1,0 +1,169 @@
+<{includeq file='db:projects_header.html'}>
+
+<!-- View single project -->
+<{if $projects_project}>
+	<div>
+		<{if $projects_project.website}>
+			<div>
+				<h2><a href="<{$projects_project.website}>"><{$projects_project.title}></a></h2>
+			</div>
+		<{else}>
+			<div><h2><{$projects_project.title}></h2>
+			</div>
+		<{/if}>
+		<{if $projects_project.counter || $projects_project.tags || $projects_project.updated}>
+			<div class="itemInfo">
+				<{if $projects_project.counter}>
+					<{$projects_project.counter}> <{$smarty.const._CO_PROJECTS_PROJECT_VIEWS}>
+					<{if $projects_project.tags || $projects_project.updated}> | <{/if}>
+				<{/if}>
+				<{if $projects_project.tags}>
+					<{$smarty.const._CO_PROJECTS_PROJECT_TAGS}> <{$projects_project.tags}>
+				<{/if}>
+				<{if $projects_project.tags && $projects_project.updated}> | <{/if}>
+				<{if $projects_project.updated}>
+					<span class="projects_updated"><{$smarty.const._CO_PROJECTS_PROJECT_UPDATED}>: <{$projects_project.last_update}></span>
+				<{/if}>
+			</div>
+		<{/if}>
+		<{if $projects_project.logo && $display_project_logos}>
+			<{if $projects_freestyle_logo_dimensions}>
+				<div class="<{$project_logo_position}>">
+					<{if $projects_project.website}>
+						<a href="<{$projects_project.website}>"><img src="<{$projects_project.logo}>" alt="<{$projects_project.title}>" /></a>
+					<{else}>
+						<img src="<{$projects_project.logo}>" alt="<{$projects_project.title}>" />
+					<{/if}>
+				</div>
+			<{else}>
+				<div class="<{$project_logo_position}>">
+					<{if $projects_project.website}>
+						<a href="<{$projects_project.website}>"><{resized_image file=$projects_project.logo width=$projects_logo_display_width height="999" fit="inside"}></a>
+					<{else}>
+						<{resized_image file=$projects_project.logo width=$projects_logo_display_width height="999" fit="inside"}>
+					<{/if}>
+				</div>
+			<{/if}>
+		<{/if}>
+		<{if $projects_project.extended_text}>
+			<div class="projects_separator"><{$projects_project.extended_text}></div>
+		<{else}>
+			<div class="projects_separator"><{$projects_project.description}></div>
+		<{/if}>
+		<div class="projects_table">
+			<{if $projects_project.contact_name}>
+				<div class="projects_row">
+					<div class="projects_left_cell"><strong><{$smarty.const._CO_PROJECTS_PROJECT_CONTACT_NAME}>: </strong></div>
+					<div class="projects_right_cell"><{$projects_project.contact_name}></div>
+				</div>
+			<{/if}>
+			<{if $projects.project.contact_name && $projects_project.contact_position}>
+				<div class="projects_row">
+					<div class="projects_left_cell"><strong><{$smarty.const._CO_PROJECTS_PROJECT_CONTACT_POSITION}>: </strong></div>
+					<div class="projects_right_cell"><{$projects_project.contact_position}></div>
+				</div>
+			<{/if}>
+			<{if $projects_project.contact_phone}>
+				<div class="projects_row">
+					<div class="projects_left_cell"><strong><{$smarty.const._CO_PROJECTS_PROJECT_CONTACT_PHONE}>: </strong></div>
+					<div class="projects_right_cell"><{$projects_project.contact_phone}></div>
+				</div>
+			<{/if}>
+			<{if $projects_project.contact_fax}>
+				<div class="projects_row">
+					<div class="projects_left_cell"><strong><{$smarty.const._CO_PROJECTS_PROJECT_CONTACT_FAX}>: </strong></div>
+					<div class="projects_right_cell"><{$projects_project.contact_fax}></div>
+				</div>
+			<{/if}>
+			<{if $projects_project.contact_email}>
+				<div class="projects_row">
+					<div class="projects_left_cell"><strong><{$smarty.const._CO_PROJECTS_PROJECT_CONTACT_EMAIL}>: </strong></div>
+					<div class="projects_right_cell"><{$projects_project.contact_email}></div>
+				</div>
+			<{/if}>
+			<{if $projects_project.address}>
+				<div class="projects_row">
+					<div class="projects_left_cell"><strong><{$smarty.const._CO_PROJECTS_PROJECT_ADDRESS}>: </strong></div>
+					<div class="projects_right_cell"><{$projects_project.address}></div>
+				</div>
+			<{/if}>
+			<{if $projects_project.website}>
+				<div class="projects_row">
+					<div class="projects_left_cell"><strong><{$smarty.const._CO_PROJECTS_PROJECT_WEBSITE}>: </strong></div>
+					<div class="projects_right_cell"><a href="<{$projects_project.website}>"><{$projects_project.website}></a></div>
+				</div>
+			<{/if}>
+		</div>
+	</div>
+<{/if}>
+
+<!-- View project index in summary mode -->
+<{if $project_summaries}>
+	<div>
+		
+		<!-- Tag select box -->
+		<div>
+			<{if $projects_tag_select_box}>
+				<{$projects_tag_select_box}>
+			<{/if}>
+		</div>
+		
+		<!-- Pagination control -->
+		<div>
+			<{if $projects_navbar }><{$projects_navbar}><{/if}>
+		</div>
+		
+		<{foreach item = project from = $project_summaries}>
+			<div class="projects_no_overflow">
+				<h2 class="projects_separator"><a href="<{$project.itemUrl}>"><{$project.title}></a></h2>
+				<div class="itemInfo">
+					<{if $project.tags}>
+						<{$smarty.const._CO_PROJECTS_PROJECT_TAGS}> <{$project.tags}>
+					<{/if}>
+					<{if $project.tags && $project.updated}> | <{/if}>
+					<{if $project.updated}>
+						<span class="projects_updated"><{$smarty.const._CO_PROJECTS_PROJECT_UPDATED}>: <{$project.last_update}></span>
+					<{/if}>
+				</div>
+				<div>
+					<{if $project.logo && $display_project_logos}>
+						<{if $projects_freestyle_logo_dimensions}>
+
+							<div class="<{$project_logo_position}>">
+								<a href="<{$project.itemUrl}>"><img src="<{$project.logo}>" alt="<{$project.title}>" /></a>
+							</div>
+
+						<{else}>
+
+							<div class="<{$project_logo_position}>">
+								<a href="<{$project.itemUrl}>"><{resized_image file=$project.logo width=$projects_logo_display_width height="999" fit="inside"}></a>
+							</div>
+
+						<{/if}>
+					<{/if}>
+					<div>
+						<p><{$project.description}></p>
+					</div>
+				</div>
+			</div>
+		<{/foreach}>
+
+		<!-- Pagination control -->
+		<div class="projects_clear">
+			<{if $projects_navbar }><{$projects_navbar}><{/if}>
+		</div>
+		
+	</div>
+<{/if}>
+
+<!-- View project index as compact table -->
+<{if $projects_project_table}>
+	<div>
+		<{if $projects_tag_select_box}>
+			<{$projects_tag_select_box}>
+		<{/if}>
+	</div>
+	<{$projects_project_table}>
+<{/if}>
+
+<{includeq file='db:projects_footer.html'}>

@@ -1,0 +1,4 @@
+Beta V1.0
+=========
+
+- First test release, 20/1/2012. For ImpressCMS V1.3.x only.

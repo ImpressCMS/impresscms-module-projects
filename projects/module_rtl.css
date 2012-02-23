@@ -1,0 +1,72 @@
+.projects_headertable
+{
+	padding: 0; margin: 0; border-bottom: 1px solid; margin-bottom: 10px;
+}
+
+.projects_modulename
+{
+	font-size: 0.8em; text-align: left; font-weight: bold; padding-right: 0.3em; line-height: 18px;
+}
+
+.projects_breadcrumb
+{
+	font-size: 0.8em; line-height: 18px;
+}
+
+.projects_adminlinks
+{
+	padding-top: 15px; padding-bottom: 5px; font-size: 0.8em; text-align: center; line-height: 18px;
+}
+
+/* Used to display project logos, floated to the right */
+.projects_float_right 
+{
+	float:right;
+	margin: 0em 0em 1em 1em;
+}
+
+/* Used to display project logos, floated to the left */
+.projects_float_left 
+{
+	float:left;
+	margin: 0em 1em 1em 0em;
+}
+
+/* Used to prevent projects overlapping logos of others on the index page */
+.projects_clear
+{
+	clear:both;
+}
+
+/* Used to vertically space elements to neaten up the display */
+.projects_separator 
+{
+	margin-bottom:1em;
+}
+
+/* Tableless layout */
+.projects_table
+{
+	display: table;
+}
+
+.projects_row
+{
+	display: table-row;
+}
+
+.projects_left_cell
+{
+	display: table-cell;
+	padding-right: 1em;
+}
+
+.projects_right_cell
+{
+	display: table-cell;
+}
+
+.projects_updated
+{
+	color:red;
+}

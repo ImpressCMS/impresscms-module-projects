@@ -12,7 +12,5 @@
  * @version		$Id$
  */
 
-include_once "../../mainfile.php";
-include_once ICMS_ROOT_PATH . "/header.php";
-header('location: project.php');
+include 'project.php';
 exit();

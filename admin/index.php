@@ -12,5 +12,5 @@
  * @version		$Id$
  */
 
-header("location: project.php");
+include 'project.php';
 exit;

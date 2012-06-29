@@ -91,7 +91,7 @@ $modversion['blocks'][1] = array(
 	'description' => _MI_PROJECTS_RANDOMDSC,
 	'show_func' => 'show_random_projects',
 	'edit_func' => 'edit_random_projects',
-	'options' => '5|1|1|0', // Number of articles per page, tag_id, randomise, summary or list view
+	'options' => '5|1|1|0|0', // Number of articles per page, tag_id, randomise, summary or list view, show current projects
 	'template' => 'projects_block_random.html'
 );
 

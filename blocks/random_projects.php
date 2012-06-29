@@ -46,9 +46,22 @@ function show_random_projects($options)
 			. " AND `tid` = '" . $options[3] . "'"
 			. " AND `mid` = '" . $projectsModule->getVar('mid') . "'"
 			. " AND `item` = 'project'"
-			. " AND `online_status` = '1'"
-			. " AND `complete` = '0'"
-			. " ORDER BY `weight` ASC";
+			. " AND `online_status` = '1'";
+		
+		// Check whether to display current projects, completed projects, or both
+		switch ($options[4])
+		{
+			case "0":
+				$query .= " AND `complete` = '0'";
+				break;
+			case "1":
+				" AND `complete` = '1'";
+				break;
+			default:
+				// Complete is not used as a criteria; both current and completed projects will be returned
+		}
+		
+		$query .= " ORDER BY `weight` ASC";
 
 		$result = icms::$xoopsDB->query($query);
 
@@ -71,7 +84,19 @@ function show_random_projects($options)
 	else 
 	{
 		$criteria->add(new icms_db_criteria_Item('online_status', '1'));
-		$criteria->add(new icms_db_criteria_Item('complete', '0'));
+		
+		// Check whether to display current projects, completed projects, or both
+		switch ($options[4])
+		{
+			case "0":
+				$criteria->add(new icms_db_criteria_Item('complete', '0'));
+				break;
+			case "1":
+				$criteria->add(new icms_db_criteria_Item('complete', '1'));
+				break;
+			default:
+				// Complete is not used as a criteria; both current and completed projects will be returned
+		}
 		$criteria->setSort('weight');
 		$criteria->setOrder('ASC');
 		$project_list = $projects_project_handler->getList($criteria);
@@ -311,6 +336,16 @@ function edit_random_projects($options)
 		$form_select->addOptionArray($tagList);
 		$form .= '<td>' . $form_select->render() . '</td></tr>';
 	}
+	
+	// Display current projects, completed projects, or both?
+	$show_type_options = array(0 => _MB_PROJECTS_RANDOM_SHOW_CURRENT, 
+		1 => _MB_PROJECTS_RANDOM_SHOW_COMPLETED, 
+		2 => _MB_PROJECTS_RANDOM_SHOW_BOTH);
+	
+	$form .= '<tr><td>' . _MB_PROJECTS_RANDOM_SHOW_TYPE . '</td>';
+	$form_select = new icms_form_elements_Select('', 'options[4]', $options[4], '1', FALSE);
+	$form_select->addOptionArray($show_type_options);
+	$form .= '<td>' . $form_select->render() . '</td></tr>';
 	
 	$form .= '</table>';
 	

@@ -19,3 +19,7 @@ define("_MB_PROJECTS_RANDOM_OR_FIXED", "Randomise? (Do not cache the block!)");
 define("_MB_PROJECTS_LOGOS_OR_LIST", "Show project summaries? (Otherwise will show compact list).");
 define("_MB_PROJECTS_RANDOM_YES", "Yes");
 define("_MB_PROJECTS_RANDOM_NO", "No");
+define("_MB_PROJECTS_RANDOM_SHOW_TYPE", "Display current projects, completed projects or both?");
+define("_MB_PROJECTS_RANDOM_SHOW_CURRENT", "Current");
+define("_MB_PROJECTS_RANDOM_SHOW_COMPLETED", "Completed");
+define("_MB_PROJECTS_RANDOM_SHOW_BOTH", "Both");

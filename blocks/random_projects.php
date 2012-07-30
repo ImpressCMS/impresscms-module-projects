@@ -327,6 +327,7 @@ function edit_random_projects($options)
 
 		$criteria = new icms_db_criteria_Compo();
 		$criteria->add(new icms_db_criteria_Item('tag_id', $relevant_tag_ids, 'IN'));
+		$criteria->add(new icms_db_criteria_Item('label_type', '0'));
 		$tagList = $sprockets_tag_handler->getList($criteria);
 
 		$tagList = array(0 => _MB_PROJECTS_RANDOM_ALL) + $tagList;

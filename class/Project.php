@@ -192,7 +192,7 @@ class mod_projects_Project extends icms_ipf_seo_Object
 		if (icms_get_module_status("sprockets")) {
 			$sprockets_taglink_handler = icms_getModuleHandler('taglink',
 					$sprocketsModule->getVar('dirname'), 'sprockets');
-			$ret = $sprockets_taglink_handler->getTagsForObject($this->id(), $this->handler);
+			$ret = $sprockets_taglink_handler->getTagsForObject($this->id(), $this->handler, 0);
 			$this->setVar('tag', $ret);
 		}
 	}

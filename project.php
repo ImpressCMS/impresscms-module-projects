@@ -119,7 +119,7 @@ if($projectObj && !$projectObj->isNew())
 	if (icms_get_module_status("sprockets"))
 	{
 		$project['tags'] = array();
-		$project_tag_array = $sprockets_taglink_handler->getTagsForObject($projectObj->getVar('project_id'), $projects_project_handler);
+		$project_tag_array = $sprockets_taglink_handler->getTagsForObject($projectObj->getVar('project_id'), $projects_project_handler, 0);
 		foreach ($project_tag_array as $key => $value)
 		{
 			$project['tags'][$value] = '<a href="' . PROJECTS_URL . 'project.php?tag_id=' . $value 

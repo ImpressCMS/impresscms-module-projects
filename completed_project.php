@@ -40,7 +40,7 @@ if (icms_get_module_status("sprockets"))
 	$sprockets_tag_handler = icms_getModuleHandler('tag', $sprocketsModule->getVar('dirname'), 'sprockets');
 	$sprockets_taglink_handler = icms_getModuleHandler('taglink', $sprocketsModule->getVar('dirname'), 'sprockets');
 	$criteria = icms_buildCriteria(array('label_type' => '0'));
-	$sprockets_tag_buffer = $sprockets_tag_handler->getObjects($criteria, TRUE, TRUE);
+	$sprockets_tag_buffer = $sprockets_tag_handler->getList($criteria, TRUE, TRUE);
 }
 
 // Assign common logo preferences to template
@@ -97,7 +97,7 @@ if($projectObj && !$projectObj->isNew())
 		foreach ($project_tag_array as $key => $value)
 		{
 			$project['tags'][$value] = '<a href="' . PROJECTS_URL . 'completed_project.php?tag_id=' . $value 
-					. '">' . $sprockets_tag_buffer[$value]->getVar('title', 'e') . '</a>';
+					. '">' . $sprockets_tag_buffer[$value] . '</a>';
 		}
 		$project['tags'] = implode(', ', $project['tags']);
 	}
@@ -134,9 +134,9 @@ else
 		// Append the tag to the breadcrumb title
 		if (array_key_exists($clean_tag_id, $sprockets_tag_buffer) && ($clean_tag_id !== 0))
 		{
-			$projects_tag_name = $sprockets_tag_buffer[$clean_tag_id]->getVar('title', 'e');
+			$projects_tag_name = $sprockets_tag_buffer[$clean_tag_id];
 			$icmsTpl->assign('projects_tag_name', $projects_tag_name);
-			$icmsTpl->assign('projects_category_path', $sprockets_tag_buffer[$clean_tag_id]->getVar('title', 'e'));
+			$icmsTpl->assign('projects_category_path', $sprockets_tag_buffer[$clean_tag_id]);
 		}
 
 		// Load the tag navigation select box
@@ -159,7 +159,7 @@ else
 		{
 			if (array_key_exists($clean_tag_id, $sprockets_tag_buffer) && ($clean_tag_id !== 0))
 			{
-				$projects_tag_name = $sprockets_tag_buffer[$clean_tag_id]->getVar('title', 'e');
+				$projects_tag_name = $sprockets_tag_buffer[$clean_tag_id];
 				$icmsTpl->assign('projects_tag_name', $projects_tag_name);
 			}
 		}
@@ -282,7 +282,7 @@ else
 				}
 				$project_tag_id_buffer[$taglink->getVar('iid')][] = '<a href="' . PROJECTS_URL . 
 						'completed_project.php?tag_id=' . $taglink->getVar('tid') . '">' 
-						. $sprockets_tag_buffer[$taglink->getVar('tid')]->getVar('title', 'e')
+						. $sprockets_tag_buffer[$taglink->getVar('tid')]
 						. '</a>';
 			}
 

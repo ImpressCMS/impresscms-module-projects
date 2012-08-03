@@ -200,7 +200,7 @@ function show_random_projects($options)
 		// Get a reference array of tags
 		$criteria = icms_buildCriteria(array('label_type' => '0'));
 		$sprockets_tag_handler = icms_getModuleHandler('tag', $sprocketsModule->getVar('dirname'), 'sprockets');
-		$sprockets_tag_buffer = $sprockets_tag_handler->getObjects($criteria, TRUE, TRUE);
+		$sprockets_tag_buffer = $sprockets_tag_handler->getList($criteria, TRUE, TRUE);
 
 		// Prepare multidimensional array of tag_ids with project_id (iid) as key
 		$taglink_buffer = $project_tag_id_buffer = array();
@@ -221,7 +221,7 @@ function show_random_projects($options)
 			$project_tag_id_buffer[$taglink->getVar('iid')][] = '<a href="' . ICMS_URL . '/modules/' 
 					. $projectsModule->getVar('dirname') . '/project.php?tag_id=' 
 					. $taglink->getVar('tid') . '">' 
-					. $sprockets_tag_buffer[$taglink->getVar('tid')]->getVar('title', 'e')
+					. $sprockets_tag_buffer[$taglink->getVar('tid')]
 					. '</a>';
 		}
 

@@ -8,7 +8,7 @@
  * @license		http://www.gnu.org/licenses/old-licenses/gpl-2.0.html GNU General Public License (GPL)
  * @since		1.0
  * @author		marcan aka Marc-André Lanciault <marcan@smartfactory.ca>
- * Modified for use in the Podcast module by Madfish
+ * Modified for use in the Projects module by Madfish
  * @version		$Id$
  */
 
@@ -198,8 +198,9 @@ function show_random_projects($options)
 		$linked_project_ids = '(' . implode(',', $linked_project_ids) . ')';
 		
 		// Get a reference array of tags
+		$criteria = icms_buildCriteria(array('label_type' => '0'));
 		$sprockets_tag_handler = icms_getModuleHandler('tag', $sprocketsModule->getVar('dirname'), 'sprockets');
-		$sprockets_tag_buffer = $sprockets_tag_handler->getObjects(NULL, TRUE, FALSE);
+		$sprockets_tag_buffer = $sprockets_tag_handler->getObjects($criteria, TRUE, TRUE);
 
 		// Prepare multidimensional array of tag_ids with project_id (iid) as key
 		$taglink_buffer = $project_tag_id_buffer = array();
@@ -220,7 +221,7 @@ function show_random_projects($options)
 			$project_tag_id_buffer[$taglink->getVar('iid')][] = '<a href="' . ICMS_URL . '/modules/' 
 					. $projectsModule->getVar('dirname') . '/project.php?tag_id=' 
 					. $taglink->getVar('tid') . '">' 
-					. $sprockets_tag_buffer[$taglink->getVar('tid')]['title']
+					. $sprockets_tag_buffer[$taglink->getVar('tid')]->getVar('title', 'e')
 					. '</a>';
 		}
 

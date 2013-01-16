@@ -1,0 +1,49 @@
+<!-- If you want to know why some style information is hard coded, the answer is that module
+style sheets do not work on cached blocks. I think this is a long-standing core bug -->
+
+<!-- Summary mode -->
+<{if $block.show_logos == TRUE}>
+	<{foreach item = project from = $block.random_projects}>
+		<h2 style="overflow:auto; margin-bottom:1em;"><a href="<{$project.itemUrl}>"><{$project.title}></a></h2>
+		<div class="itemInfo">
+			<{if $project.counter}>
+				<{$project.counter}> <{$smarty.const._CO_PROJECTS_PROJECT_VIEWS}>
+				<{if $project.tags || $project.updated}> | <{/if}>
+			<{/if}>
+			<{if $project.tags}>
+				<{$smarty.const._CO_PROJECTS_PROJECT_TAGS}> <{$project.tags}>
+			<{/if}>
+			<{if $project.tags && $project.updated}> | <{/if}>
+			<{if $project.updated}>
+				<span class="projects_updated"><{$smarty.const._CO_PROJECTS_PROJECT_UPDATED}>: <{$project.date}></span>
+			<{/if}>
+		</div>
+		<div>
+			<{if $project.logo}>
+				<{if $projects_freestyle_logo_dimensions}>
+
+					<div style="<{$block.project_logo_position}>">
+						<a href="<{$project.itemUrl}>"><img src="<{$project.logo}>" alt="<{$project.title}>" /></a>
+					</div>
+
+				<{else}>
+					<div style="<{$block.project_logo_position}>">
+						<a href="<{$project.itemUrl}>"><{resized_image file=$project.logo width=$block.projects_logo_block_display_width height="999" fit="inside"}></a>
+					</div>
+
+				<{/if}>
+			<{/if}>
+			<div>
+				<p><{$project.description}></p>
+			</div>
+		</div>
+	<{/foreach}>
+	
+<!-- Compact list mode -->
+<{else}>
+	<ul>
+		<{foreach item = project from = $block.random_projects}>
+			<li><a href="<{$project.itemUrl}>"><{$project.title}></a></li>
+		<{/foreach}>
+	</ul>
+<{/if}>

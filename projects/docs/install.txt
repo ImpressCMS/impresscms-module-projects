@@ -1,0 +1,6 @@
+HOW TO INSTALL PROJECTS
+=======================
+
+1. Projects is installed as a regular ImpressCMS module, which means you should copy the complete /projects folder into the /modules directory of your website. Then, log in to your site as administrator, go to System Admin > Modules, look for the projects icon in the list of uninstalled modules and click in the install icon. Follow the directions in the screen and you'll be ready to go.
+
+2. Projects has OPTIONAL tagging support via the Sprockets module, which must be installed separately. This enables your projects to be sorted and filtered by tag, making the module a lot more useful.

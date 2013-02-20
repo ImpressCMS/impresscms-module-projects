@@ -16,6 +16,6 @@ V1.03 (16/1/2013)
 - Minor compatibility upgrade to work with Sprockets 2.0.
 - Projects is no longer compatible with Sprockets 1.x from this version onwards.
 
-V1.04 Beta
-==========
+V1.04 Final (20/2/2013)
+=======================
 - Improve efficiency of search function.

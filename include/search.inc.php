@@ -38,13 +38,15 @@ function projects_search($queryarray, $andor, $limit, $offset = 0, $userid = 0)
 	// Process the actual projects (not the padding)
 	for ($i = 0; $i < $number_to_process; $i++)
 	{
-		$item['image'] = "images/project.png";
-		$item['link'] = $projectsArray[$i]->getItemLink(TRUE);
-		$item['title'] = $projectsArray[$i]->getVar("title");
-		$item['time'] = $projectsArray[$i]->getVar("date", "e");
-		$item['uid'] = $projectsArray[$i]->getVar("creator");
-		$ret[] = $item;
-		unset($item);
+		if (is_object($projectsArray[$i])) { // Required to prevent crashing on profile view
+			$item['image'] = "images/project.png";
+			$item['link'] = $projectsArray[$i]->getItemLink(TRUE);
+			$item['title'] = $projectsArray[$i]->getVar("title");
+			$item['time'] = $projectsArray[$i]->getVar("date", "e");
+			$item['uid'] = $projectsArray[$i]->getVar("creator");
+			$ret[] = $item;
+			unset($item);
+		}
 	}
 
 	// Restore the padding (required for 'hits' information and pagination controls). The offset

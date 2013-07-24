@@ -17,7 +17,7 @@ defined("ICMS_ROOT_PATH") or die("ICMS root path not defined");
 /**  General Information  */
 $modversion = array(
 	"name"						=> _MI_PROJECTS_MD_NAME,
-	"version"					=> 1.05,
+	"version"					=> 1.06,
 	"description"				=> _MI_PROJECTS_MD_DESC,
 	"author"					=> "Madfish (Simon Wilkinson)",
 	"credits"					=> "Thanks to Rene Sato, qm-b, Phoenyx and skenow for testing and feedback. Module icon by David Lanham http://dlanham.com/",
@@ -33,9 +33,9 @@ $modversion = array(
 	"image"						=> "images/icon_big.png", /* for backward compatibility */
 
 /**  Development information */
-	"status_version"			=> "1.05",
-	"status"					=> "Trunk",
-	"date"						=> "4/4/2013",
+	"status_version"			=> "1.06",
+	"status"					=> "Beta",
+	"date"						=> "24/7/2013",
 	"author_word"				=> "For ICMS 1.3+ and 2.0 only.",
 
 /** Contributors */

@@ -124,6 +124,8 @@ class mod_projects_ProjectHandler extends icms_ipf_Handler
 					'LIKE'), 'OR');
 				$criteriaKeyword->add(new icms_db_criteria_Item('description', '%' . $queryarray[$i]
 					. '%', 'LIKE'), 'OR');
+				$criteriaKeyword->add(new icms_db_criteria_Item('extended_text', '%' . $queryarray[$i]
+					. '%', 'LIKE'), 'OR');
 				$criteriaKeywords->add($criteriaKeyword, $andor);
 				unset ($criteriaKeyword);
 			}

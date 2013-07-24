@@ -24,3 +24,4 @@ V1.05 beta
 ==========
 - Remove paragraph tags from template (should be entered in description).
 - Fix error in search function criteria, submitter should be creator.
+- Add extended text to searchable fields

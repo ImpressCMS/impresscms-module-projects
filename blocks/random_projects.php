@@ -245,7 +245,7 @@ function show_random_projects($options)
 	$block['random_projects'] = $projects;
 	$block['show_logos'] = $options[2];
 	$block['projects_logo_block_display_width'] = icms_getConfig('projects_logo_block_display_width', $projectsModule->getVar('dirname'));
-	if (icms_getConfig('project_logo_position', $projectsModule->getVar('dirname') == 1)) // Align right
+	if (icms_getConfig('project_logo_position', $projectsModule->getVar('dirname')) == 1) // Align right
 	{
 		$block['project_logo_position'] = 'float:right; margin: 0em 0em 1em 1em;';
 	}

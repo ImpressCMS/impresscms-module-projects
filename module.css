@@ -31,8 +31,7 @@ cached blocks (core bug?). So if you want to alter the block CSS, you'll find it
 /* Used to display project logos, floated to the left */
 .projects_float_left 
 {
-	float:left;
-	margin: 0em 1em 1em 0em;
+	float:left;margin: 0em 1em 1em 0em;
 }
 
 /* Used to prevent projects overlapping logos of others on the index page */

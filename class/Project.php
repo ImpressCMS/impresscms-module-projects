@@ -39,6 +39,7 @@ class mod_projects_Project extends icms_ipf_seo_Object
 		$this->quickInitVar("contact_phone", XOBJ_DTYPE_TXTBOX, FALSE);
 		$this->quickInitVar("contact_fax", XOBJ_DTYPE_TXTBOX, FALSE);
 		$this->quickInitVar("address", XOBJ_DTYPE_TXTAREA, FALSE);
+		$this->quickInitVar('type', XOBJ_DTYPE_TXTBOX, TRUE, FALSE, FALSE, 'Text');
 		$this->quickInitVar("creator", XOBJ_DTYPE_INT, TRUE);
 		$this->quickInitVar("date", XOBJ_DTYPE_LTIME, TRUE);
 		$this->quickInitVar("last_update", XOBJ_DTYPE_LTIME, TRUE);

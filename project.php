@@ -16,8 +16,14 @@ $xoopsOption["template_main"] = "projects_project.html";
 include_once ICMS_ROOT_PATH . "/header.php";
 
 // Sanitise input parameters
-$clean_project_id = isset($_GET["project_id"]) ? (int)$_GET["project_id"] : 0 ;
+$untagged_content = FALSE;
+if (isset($_GET['tag_id'])) {
+	if ($_GET['tag_id'] == 'untagged') {
+		$untagged_content = TRUE;
+	}
+}
 $clean_tag_id = isset($_GET["tag_id"]) ? (int)$_GET["tag_id"] : 0 ;
+$clean_project_id = isset($_GET["project_id"]) ? (int)$_GET["project_id"] : 0 ;
 $clean_start = isset($_GET["start"]) ? (int)($_GET["start"]) : 0;
 
 // Get the requested project, or retrieve the index page. Only show online projects

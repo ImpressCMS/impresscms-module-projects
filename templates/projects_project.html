@@ -98,16 +98,10 @@
 <{/if}>
 
 <!-- View project index in summary mode -->
+<!-- Tag select box -->
+<{if $projects_tag_select_box}><div><{$projects_tag_select_box}></div><{/if}>
 <{if $project_summaries}>
-	<div>
-		
-		<!-- Tag select box -->
-		<div>
-			<{if $projects_tag_select_box}>
-				<{$projects_tag_select_box}>
-			<{/if}>
-		</div>
-		
+	<div>		
 		<!-- Pagination control -->
 		<div>
 			<{if $projects_navbar }><{$projects_navbar}><{/if}>

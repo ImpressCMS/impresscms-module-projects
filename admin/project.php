@@ -45,16 +45,19 @@ include_once "admin_header.php";
 
 $clean_op = "";
 $projects_project_handler = icms_getModuleHandler("project", basename(dirname(dirname(__FILE__))), "projects");
-/** Create a whitelist of valid values, be sure to use appropriate types for each value
- * Be sure to include a value for no parameter, if you have a default condition
- */
 $valid_op = array ("mod", "changedField", "addproject", "del", "view", "changeWeight", "changeComplete", "visible", "");
 
+// Sanitise input parameters
+$clean_project_id = isset($_GET["project_id"]) ? (int)$_GET["project_id"] : 0 ;
+$untagged_content = FALSE;
+if (isset($_GET['tag_id'])) {
+	if ($_GET['tag_id'] == 'untagged') {
+		$untagged_content = TRUE;
+	}
+}
+$clean_tag_id = isset($_GET['tag_id']) ? (int)$_GET['tag_id'] : 0 ;
 if (isset($_GET["op"])) $clean_op = htmlentities($_GET["op"]);
 if (isset($_POST["op"])) $clean_op = htmlentities($_POST["op"]);
-
-$clean_project_id = isset($_GET["project_id"]) ? (int)$_GET["project_id"] : 0 ;
-$clean_tag_id = isset($_GET['tag_id']) ? (int)$_GET['tag_id'] : 0 ;
 
 if (in_array($clean_op, $valid_op, TRUE))
 {
@@ -150,15 +153,30 @@ if (in_array($clean_op, $valid_op, TRUE))
 				$tag_select_box = $sprockets_tag_handler->getTagSelectBox('project.php', $clean_tag_id,
 					_AM_PROJECTS_PROJECT_ALL_PROJECTS, FALSE, icms::$module->getVar('mid'));
 				
+				if ($untagged_content) {
+				$tag_select_box = $sprockets_tag_handler->getTagSelectBox('project.php', 'untagged',
+					_AM_PROJECTS_PROJECT_ALL_PROJECTS, FALSE, icms::$module->getVar('mid'),
+						'project', TRUE);
+				} else {
+					$tag_select_box = $sprockets_tag_handler->getTagSelectBox('project.php',
+							$clean_tag_id, _AM_PROJECTS_ALL_PROJECTS, FALSE,
+							icms::$module->getVar('mid'), 'project', TRUE);
+				}
+				
 				if (!empty($tag_select_box)) {
 					echo '<h3>' . _AM_PROJECTS_PROJECT_FILTER_BY_TAG . '</h3>';
 					echo $tag_select_box;
 				}
 
-				if ($clean_tag_id) {
+				if ($untagged_content || $clean_tag_id) {
 
 					// get a list of project IDs belonging to this tag
 					$criteria = new icms_db_criteria_Compo();
+					if ($untagged_content) {
+						$criteria->add(new icms_db_criteria_Item('tid', 0));
+					} else {
+						$criteria->add(new icms_db_criteria_Item('tid', $clean_tag_id));
+					}
 					$criteria->add(new icms_db_criteria_Item('tid', $clean_tag_id));
 					$criteria->add(new icms_db_criteria_Item('mid', icms::$module->getVar('mid')));
 					$criteria->add(new icms_db_criteria_Item('item', 'project'));

@@ -16,6 +16,12 @@ $xoopsOption["template_main"] = "projects_project.html";
 include_once ICMS_ROOT_PATH . "/header.php";
 
 // Sanitise input parameters
+$untagged_content = FALSE;
+if (isset($_GET['tag_id'])) {
+	if ($_GET['tag_id'] == 'untagged') {
+		$untagged_content = TRUE;
+	}
+}
 $clean_project_id = isset($_GET["project_id"]) ? (int)$_GET["project_id"] : 0 ;
 $clean_tag_id = isset($_GET["tag_id"]) ? (int)$_GET["tag_id"] : 0 ;
 $clean_start = isset($_GET["start"]) ? (int)($_GET["start"]) : 0;
@@ -142,8 +148,15 @@ else
 		// Load the tag navigation select box
 		// $action, $selected = null, $zero_option_message = '---', 
 		// $navigation_elements_only = TRUE, $module_id = null, $item = null,
-		$tag_select_box = $sprockets_tag_handler->getTagSelectBox('completed_project.php', $clean_tag_id, 
-				_CO_PROJECTS_PROJECT_ALL_TAGS, TRUE, icms::$module->getVar('mid'));
+		if ($untagged_content) {
+			$tag_select_box = $sprockets_tag_handler->getTagSelectBox('completed_project.php',
+					'untagged', _CO_PROJECTS_PROJECT_ALL_TAGS, TRUE, icms::$module->getVar('mid'), 
+					'project', TRUE);
+		} else {
+			$tag_select_box = $sprockets_tag_handler->getTagSelectBox('completed_project.php',
+					$clean_tag_id, _CO_PROJECTS_PROJECT_ALL_TAGS, TRUE, icms::$module->getVar('mid'),
+					'project', TRUE);
+		}	
 		$icmsTpl->assign('projects_tag_select_box', $tag_select_box);
 	}
 	
@@ -161,11 +174,15 @@ else
 			{
 				$projects_tag_name = $sprockets_tag_buffer[$clean_tag_id];
 				$icmsTpl->assign('projects_tag_name', $projects_tag_name);
+			} elseif ($untagged_content) {
+				$projects_tag_name = $sprockets_tag_buffer[0]->getVar('title', 'e');
+				$icmsTpl->assign('projects_tag_name', $projects_tag_name);
 			}
+			$icmsTpl->assign('projects_category_path', $sprockets_tag_buffer[$clean_tag_id]->getVar('title', 'e'));
 		}
 				
 		// Retrieve projects for a given tag
-		if ($clean_tag_id && icms_get_module_status("sprockets"))
+		if (($clean_tag_id || $untagged_content) && icms_get_module_status("sprockets"))
 		{
 			/**
 			 * Retrieve a list of projects JOINED to taglinks by project_id/tag_id/module_id/item
@@ -256,48 +273,37 @@ else
 		 
 		// Prepare a list of project_id, this will be used to create a taglink buffer, which is used
 		// to create tag links for each project
-		$linked_project_ids = '';
+		$linked_project_ids = array();
 		foreach ($project_summaries as $key => $value) {
 			$linked_project_ids[] = $value['project_id'];
 		}
 		
 		if (icms_get_module_status("sprockets") && !empty($linked_project_ids))
 		{
-			$linked_project_ids = '(' . implode(',', $linked_project_ids) . ')';
-
-			// Prepare multidimensional array of tag_ids with project_id (iid) as key
-			$taglink_buffer = $project_tag_id_buffer = array();
-			$criteria = new  icms_db_criteria_Compo();
-			$criteria->add(new icms_db_criteria_Item('mid', icms::$module->getVar('mid')));
-			$criteria->add(new icms_db_criteria_Item('item', 'project'));
-			$criteria->add(new icms_db_criteria_Item('iid', $linked_project_ids, 'IN'));
-			$taglink_buffer = $sprockets_taglink_handler->getObjects($criteria, TRUE, TRUE);
-			unset($criteria);
-
-			// Build tags, with URLs for navigation
-			foreach ($taglink_buffer as $key => $taglink) {
-
-				if (!array_key_exists($taglink->getVar('iid'), $project_tag_id_buffer)) {
-					$project_tag_id_buffer[$taglink->getVar('iid')] = array();
-				}
-				$project_tag_id_buffer[$taglink->getVar('iid')][] = '<a href="' . PROJECTS_URL . 
-						'completed_project.php?tag_id=' . $taglink->getVar('tid') . '">' 
-						. $sprockets_tag_buffer[$taglink->getVar('tid')]
-						. '</a>';
-			}
-
-			// Convert the tag arrays into strings for easy handling in the template
-			foreach ($project_tag_id_buffer as $key => &$value) 
-			{
-				$value = implode(', ', $value);
-			}
-
-			// Assign each subarray of tags to the matching projects, using the item id as marker
-			foreach ($project_summaries as $key => &$value) {
-				if (!empty($project_tag_id_buffer[$value['project_id']]))
-				{
-					$value['tags'] = $project_tag_id_buffer[$value['project_id']];
-				}
+			$tagList = $sprockets_tag_handler->getTagBuffer(TRUE);
+			$taglink_buffer = $sprockets_taglink_handler->getTagsForObjects($linked_project_ids, 'project');
+			foreach ($project_summaries as &$project) {
+				$tagLinks = $icons = array();
+					if ($taglink_buffer[$project['project_id']]) {
+						foreach ($taglink_buffer[$project['project_id']] as $tag) {
+							if ($tag == '0') {
+								$tagLinks[] = '<a href="' . PROJECTS_URL 
+										. 'completed_project.php?tag_id=untagged">' 
+										. $tagList[$tag]->getVar('title') . '</a>';
+							} else {
+								$tagLinks[] = '<a href="' . PROJECTS_URL 
+										. 'completed_project.php?tag_id=' . $tag . '">' 
+										. $tagList[$tag]->getVar('title') . '</a>';
+								$icons[] = '<a href="' . PROJECTS_URL
+										. 'completed_project.php?tag_id=' . $tag . '">'
+										. $tagList[$tag]->getVar('icon') . '</a>';
+							}
+						}
+						$project['tag'] = implode(", ", $tagLinks);
+						unset($tagLinks);
+					}
+				$tag_icons[$project['project_id']] = $icons;
+				unset($icons);
 			}
 		}
 		
@@ -343,7 +349,7 @@ else
 		
 		$tagged_project_list = '';
 		
-		if ($clean_tag_id && icms_get_module_status("sprockets")) 
+		if (($clean_tag_id || $untagged_content) && icms_get_module_status("sprockets")) 
 		{
 			// Get a list of project IDs belonging to this tag
 			$criteria = new icms_db_criteria_Compo();

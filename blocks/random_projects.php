@@ -16,6 +16,14 @@ if (!defined("ICMS_ROOT_PATH")) die("ICMS root path not defined");
 
 /**
  * Prepare random projects block for display
+ * 
+ * Options:
+ * 0. Number of projects to display
+ * 1. Randomise?
+ * 2. Display logos or simple list
+ * 3. tag_id
+ * 4. Show current projects
+ * 5. Dynamic tag filtering
  *
  * @param array $options
  * @return array 
@@ -24,9 +32,16 @@ function show_random_projects($options)
 {
 	$projectsModule = icms::handler("icms_module")->getByDirname('projects');
 	$sprocketsModule = icms::handler("icms_module")->getByDirname("sprockets");
+	$untagged_content = FALSE;
 		
 	include_once(ICMS_ROOT_PATH . '/modules/' . $projectsModule->getVar('dirname') . '/include/common.php');
 	$projects_project_handler = icms_getModuleHandler('project', $projectsModule->getVar('dirname'), 'projects');
+	
+	// Check for dynamic tag filtering, including by untagged content
+	if ($options[5] == 1 && isset($_GET['tag_id'])) {
+		$untagged_content = ($_GET['tag_id'] == 'untagged') ? TRUE : FALSE;
+		$options[3] = (int)trim($_GET['tag_id']);
+	}
 	
 	if (icms_get_module_status("sprockets"))
 	{
@@ -38,12 +53,15 @@ function show_random_projects($options)
 	$projectList = $projects = array();
 
 	// Get a list of projects filtered by tag
-	if (icms_get_module_status("sprockets") && $options[3] != 0)
+	if (icms_get_module_status("sprockets") && ($options[3] != 0 || $untagged_content))
 	{
 		$query = "SELECT `project_id` FROM " . $projects_project_handler->table . ", "
 			. $sprockets_taglink_handler->table
-			. " WHERE `project_id` = `iid`"
-			. " AND `tid` = '" . $options[3] . "'"
+			. " WHERE `project_id` = `iid`";
+		if ($untagged_content) {
+			$options[3] = 0;
+		}
+		$query .= " AND `tid` = '" . $options[3] . "'"
 			. " AND `mid` = '" . $projectsModule->getVar('mid') . "'"
 			. " AND `item` = 'project'"
 			. " AND `online_status` = '1'";
@@ -349,6 +367,18 @@ function edit_random_projects($options)
 	$form_select->addOptionArray($show_type_options);
 	$form .= '<td>' . $form_select->render() . '</td></tr>';
 	
+	// Dynamic tagging (overrides static tag filter)
+	$form .= '<tr><td>' . _MB_PROJECTS_DYNAMIC_TAG . '</td>';			
+	$form .= '<td><input type="radio" name="options[5]" value="1"';
+	if ($options[5] == 1) {
+		$form .= ' checked="checked"';
+	}
+	$form .= '/>' . _MB_PROJECTS_PROJECT_YES;
+	$form .= '<input type="radio" name="options[5]" value="0"';
+	if ($options[5] == 0) {
+		$form .= 'checked="checked"';
+	}
+	$form .= '/>' . _MB_PROJECTS_PROJECT_NO . '</td></tr>';
 	$form .= '</table>';
 	
 	return $form;

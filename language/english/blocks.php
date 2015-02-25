@@ -23,3 +23,8 @@ define("_MB_PROJECTS_RANDOM_SHOW_TYPE", "Display current projects, completed pro
 define("_MB_PROJECTS_RANDOM_SHOW_CURRENT", "Current");
 define("_MB_PROJECTS_RANDOM_SHOW_COMPLETED", "Completed");
 define("_MB_PROJECTS_RANDOM_SHOW_BOTH", "Both");
+
+// New in V1.06
+define("_MB_PROJECTS_DYNAMIC_TAG", "Dynamic tag filtering (overrides the static tag filter).");
+define("_MB_PROJECTS_PROJECT_YES", "Yes");
+define("_MB_PROJECTS_PROJECT_NO", "No");

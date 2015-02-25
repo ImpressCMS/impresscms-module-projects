@@ -218,7 +218,7 @@ function show_random_projects($options)
 		// Get a reference array of tags
 		$criteria = icms_buildCriteria(array('label_type' => '0'));
 		$sprockets_tag_handler = icms_getModuleHandler('tag', $sprocketsModule->getVar('dirname'), 'sprockets');
-		$sprockets_tag_buffer = $sprockets_tag_handler->getList($criteria, TRUE, TRUE);
+		$sprockets_tag_buffer = $sprockets_tag_handler->getTagBuffer();
 
 		// Prepare multidimensional array of tag_ids with project_id (iid) as key
 		$taglink_buffer = $project_tag_id_buffer = array();
@@ -236,11 +236,18 @@ function show_random_projects($options)
 			{
 				$project_tag_id_buffer[$taglink->getVar('iid')] = array();
 			}
-			$project_tag_id_buffer[$taglink->getVar('iid')][] = '<a href="' . ICMS_URL . '/modules/' 
+			if ($taglink->getVar('tid') == 0) {
+				$project_tag_id_buffer[$taglink->getVar('iid')][] = '<a href="' . ICMS_URL . '/modules/' 
+					. $projectsModule->getVar('dirname') . '/project.php?tag_id=untagged">' 
+					. $sprockets_tag_buffer[$taglink->getVar('tid')]
+					. '</a>';
+			} else {
+				$project_tag_id_buffer[$taglink->getVar('iid')][] = '<a href="' . ICMS_URL . '/modules/' 
 					. $projectsModule->getVar('dirname') . '/project.php?tag_id=' 
 					. $taglink->getVar('tid') . '">' 
 					. $sprockets_tag_buffer[$taglink->getVar('tid')]
 					. '</a>';
+			}
 		}
 
 		// Convert the tag arrays into strings for easy handling in the template

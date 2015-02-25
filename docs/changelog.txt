@@ -27,3 +27,7 @@ V1.05 beta
 - Add extended text to searchable fields
 - Fixed bug affecting logo alignment on random projects block
 - Add static 'type' field identifying projects as "Text" resources.
+
+V1.06 beta
+==========
+- Add support for untagged content in module contents and block.

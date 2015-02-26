@@ -152,7 +152,7 @@ if (in_array($clean_op, $valid_op, TRUE))
 				
 				if ($untagged_content) {
 				$tag_select_box = $sprockets_tag_handler->getTagSelectBox('project.php', 'untagged',
-					_AM_PROJECTS_PROJECT_ALL_PROJECTS, FALSE, icms::$module->getVar('mid'),
+					_AM_PROJECTS_ALL_PROJECTS, FALSE, icms::$module->getVar('mid'),
 						'project', TRUE);
 				} else {
 					$tag_select_box = $sprockets_tag_handler->getTagSelectBox('project.php',

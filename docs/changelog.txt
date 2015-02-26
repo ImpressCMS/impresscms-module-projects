@@ -31,3 +31,4 @@ V1.05 beta
 V1.06 beta
 ==========
 - Add support for untagged content in module contents and block.
+- Prevent block from displaying if it has no content.

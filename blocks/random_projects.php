@@ -121,164 +121,169 @@ function show_random_projects($options)
 		$project_list = array_flip($project_list);
 	}
 	
-	// Pick random projects from the list, if the block preference is so set
-	if ($options[1] == TRUE) 
-	{
-		shuffle($project_list);
-	}
-	
-	// Cut the project list down to the number of required entries and set the IDs as criteria
-	$project_list = array_slice($project_list, 0, $options[0], TRUE);
-	$criteria->add(new icms_db_criteria_Item('project_id', '(' . implode(',', $project_list) . ')', 'IN'));
-	$criteria->setSort('weight');
-	$criteria->setOrder('ASC');
-			
-	// Retrieve the projects and assign them to the block
-	$projects = $projects_project_handler->getObjects($criteria, TRUE, FALSE);
-	
-	// Need to shuffle them again as the DB will return them in order whether you like it or not
-	if ($options[1] == TRUE)
-	{
-		shuffle($projects);
-	}
+	// If the block has content proceed to process. Otherwise pass back an empty block.
+	if (!empty($project_list)) {
+		// Pick random projects from the list, if the block preference is so set
+		if ($options[1] == TRUE) 
+		{
+			shuffle($project_list);
+		}
 
-	// Check if an 'updated' notice should be displayed. this works by comparing the time since the
-	// project was last updated against the length of time that an updated notice should be shown 
-	// (as set in the module preferences)
-	
-	if (icms_getConfig('projects_show_last_updated', $projectsModule->getVar('dirname')))
-	{
-		$update_periods = array(
-			0 => 0,
-			1 => 86400,		// Show updated notice for 1 day
-			2 => 259200,	// Show updated notice for 3 days
-			3 => 604800,	// Show updated notice for 1 week
-			4 => 1209600,	// Show updated notice for 2 weeks
-			5 => 1814400,	// Show updated notice for 3 weeks
-			6 => 2419200	// Show updated notice for 4 weeks
-			);
-		$updated_notice_period = $update_periods[icms_getConfig('projects_updated_notice_period', $projectsModule->getVar('dirname'))];
-	}
-	
-	// Check if updated notices and view counter should be shown
-	// Update logo paths
-	// Add SEO string to URL
-	// Show view counter
-	foreach ($projects as $key => &$object)
-	{
-		// Update notices
+		// Cut the project list down to the number of required entries and set the IDs as criteria
+		$project_list = array_slice($project_list, 0, $options[0], TRUE);
+		$criteria->add(new icms_db_criteria_Item('project_id', '(' . implode(',', $project_list) . ')', 'IN'));
+		$criteria->setSort('weight');
+		$criteria->setOrder('ASC');
+
+		// Retrieve the projects and assign them to the block
+		$projects = $projects_project_handler->getObjects($criteria, TRUE, FALSE);
+
+		// Need to shuffle them again as the DB will return them in order whether you like it or not
+		if ($options[1] == TRUE)
+		{
+			shuffle($projects);
+		}
+
+		// Check if an 'updated' notice should be displayed. this works by comparing the time since the
+		// project was last updated against the length of time that an updated notice should be shown 
+		// (as set in the module preferences)
+
 		if (icms_getConfig('projects_show_last_updated', $projectsModule->getVar('dirname')))
 		{
-			$updated = strtotime($object['date']);
-			if ((time() - $updated) < $updated_notice_period)
+			$update_periods = array(
+				0 => 0,
+				1 => 86400,		// Show updated notice for 1 day
+				2 => 259200,	// Show updated notice for 3 days
+				3 => 604800,	// Show updated notice for 1 week
+				4 => 1209600,	// Show updated notice for 2 weeks
+				5 => 1814400,	// Show updated notice for 3 weeks
+				6 => 2419200	// Show updated notice for 4 weeks
+				);
+			$updated_notice_period = $update_periods[icms_getConfig('projects_updated_notice_period', $projectsModule->getVar('dirname'))];
+		}
+
+		// Check if updated notices and view counter should be shown
+		// Update logo paths
+		// Add SEO string to URL
+		// Show view counter
+		foreach ($projects as $key => &$object)
+		{
+			// Update notices
+			if (icms_getConfig('projects_show_last_updated', $projectsModule->getVar('dirname')))
 			{
-				$object['date'] = date(icms_getConfig('projects_date_format', $projectsModule->getVar('dirname')), $updated);
-				$object['updated'] = TRUE;
+				$updated = strtotime($object['date']);
+				if ((time() - $updated) < $updated_notice_period)
+				{
+					$object['date'] = date(icms_getConfig('projects_date_format', $projectsModule->getVar('dirname')), $updated);
+					$object['updated'] = TRUE;
+				}
 			}
-		}
-		
-		// Logo paths
-		if (icms_getConfig('display_project_logos', $projectsModule->getVar('dirname')) == TRUE && !empty ($object['logo']))
-		{
-			$object['logo'] = ICMS_URL . '/uploads/' . $projectsModule->getVar('dirname') . '/project/' . $object['logo'];
-		}
-		else
-		{
-			unset($object['logo']);
-		}
-		
-		// Add SEO friendly string to URL
-		if (!empty($object['short_url']))
-		{
-			$object['itemUrl'] .= "&amp;title=" . $object['short_url'];
-		}
-		
-		// View counter
-		if (icms_getConfig('projects_show_view_counter') == FALSE)
-		{
-			unset($object['counter']);
-		}
-	}
 
-	// Prepare tags. A list of project IDs is used to retrieve relevant taglinks. The taglinks
-	// are sorted into a multidimensional array, using the project ID as the key to each subarray.
-	// Then its just a case of assigning each subarray to the matching project.
-
-	// Prepare a list of project_id, this will be used to create a taglink buffer, which is used
-	// to create tag links for each project
-	$linked_project_ids = '';
-	foreach ($projects as $key => $value) {
-		$linked_project_ids[] = $value['project_id'];
-	}
-	
-	if (icms_get_module_status("sprockets") && !empty($linked_project_ids))
-	{
-		$linked_project_ids = '(' . implode(',', $linked_project_ids) . ')';
-		
-		// Get a reference array of tags
-		$criteria = icms_buildCriteria(array('label_type' => '0'));
-		$sprockets_tag_handler = icms_getModuleHandler('tag', $sprocketsModule->getVar('dirname'), 'sprockets');
-		$sprockets_tag_buffer = $sprockets_tag_handler->getTagBuffer();
-
-		// Prepare multidimensional array of tag_ids with project_id (iid) as key
-		$taglink_buffer = $project_tag_id_buffer = array();
-		$criteria = new  icms_db_criteria_Compo();
-		$criteria->add(new icms_db_criteria_Item('mid', $projectsModule->getVar('mid')));
-		$criteria->add(new icms_db_criteria_Item('item', 'project'));
-		$criteria->add(new icms_db_criteria_Item('iid', $linked_project_ids, 'IN'));
-		$taglink_buffer = $sprockets_taglink_handler->getObjects($criteria, TRUE, TRUE);
-		unset($criteria);
-
-		// Build tags, with URLs for navigation
-		foreach ($taglink_buffer as $key => $taglink)
-		{
-			if (!array_key_exists($taglink->getVar('iid'), $project_tag_id_buffer))
+			// Logo paths
+			if (icms_getConfig('display_project_logos', $projectsModule->getVar('dirname')) == TRUE && !empty ($object['logo']))
 			{
-				$project_tag_id_buffer[$taglink->getVar('iid')] = array();
+				$object['logo'] = ICMS_URL . '/uploads/' . $projectsModule->getVar('dirname') . '/project/' . $object['logo'];
 			}
-			if ($taglink->getVar('tid') == 0) {
-				$project_tag_id_buffer[$taglink->getVar('iid')][] = '<a href="' . ICMS_URL . '/modules/' 
-					. $projectsModule->getVar('dirname') . '/project.php?tag_id=untagged">' 
-					. $sprockets_tag_buffer[$taglink->getVar('tid')]
-					. '</a>';
-			} else {
-				$project_tag_id_buffer[$taglink->getVar('iid')][] = '<a href="' . ICMS_URL . '/modules/' 
-					. $projectsModule->getVar('dirname') . '/project.php?tag_id=' 
-					. $taglink->getVar('tid') . '">' 
-					. $sprockets_tag_buffer[$taglink->getVar('tid')]
-					. '</a>';
-			}
-		}
-
-		// Convert the tag arrays into strings for easy handling in the template
-		foreach ($project_tag_id_buffer as $key => &$value) 
-		{
-			$value = implode(', ', $value);
-		}
-
-		// Assign each subarray of tags to the matching projects, using the item id as marker
-		foreach ($projects as $key => &$value) 
-		{
-			if (!empty($project_tag_id_buffer[$value['project_id']]))
+			else
 			{
-				$value['tags'] = $project_tag_id_buffer[$value['project_id']];
+				unset($object['logo']);
+			}
+
+			// Add SEO friendly string to URL
+			if (!empty($object['short_url']))
+			{
+				$object['itemUrl'] .= "&amp;title=" . $object['short_url'];
+			}
+
+			// View counter
+			if (icms_getConfig('projects_show_view_counter') == FALSE)
+			{
+				unset($object['counter']);
 			}
 		}
-	}
-	
-	// Assign to template
-	$block['random_projects'] = $projects;
-	$block['show_logos'] = $options[2];
-	$block['projects_logo_block_display_width'] = icms_getConfig('projects_logo_block_display_width', $projectsModule->getVar('dirname'));
-	if (icms_getConfig('project_logo_position', $projectsModule->getVar('dirname')) == 1) // Align right
-	{
-		$block['project_logo_position'] = 'float:right; margin: 0em 0em 1em 1em;';
-	}
-	else // Align left
-	{
-		$block['project_logo_position'] = 'float:left; margin: 0em 1em 1em 0em;';
-	}
-	$block['projects_freestyle_logo_dimensions'] = icms_getConfig('projects_freestyle_logo_dimensions', $projectsModule->getVar('dirname'));
+
+		// Prepare tags. A list of project IDs is used to retrieve relevant taglinks. The taglinks
+		// are sorted into a multidimensional array, using the project ID as the key to each subarray.
+		// Then its just a case of assigning each subarray to the matching project.
+
+		// Prepare a list of project_id, this will be used to create a taglink buffer, which is used
+		// to create tag links for each project
+		$linked_project_ids = '';
+		foreach ($projects as $key => $value) {
+			$linked_project_ids[] = $value['project_id'];
+		}
+
+		if (icms_get_module_status("sprockets") && !empty($linked_project_ids))
+		{
+			$linked_project_ids = '(' . implode(',', $linked_project_ids) . ')';
+
+			// Get a reference array of tags
+			$criteria = icms_buildCriteria(array('label_type' => '0'));
+			$sprockets_tag_handler = icms_getModuleHandler('tag', $sprocketsModule->getVar('dirname'), 'sprockets');
+			$sprockets_tag_buffer = $sprockets_tag_handler->getTagBuffer();
+
+			// Prepare multidimensional array of tag_ids with project_id (iid) as key
+			$taglink_buffer = $project_tag_id_buffer = array();
+			$criteria = new  icms_db_criteria_Compo();
+			$criteria->add(new icms_db_criteria_Item('mid', $projectsModule->getVar('mid')));
+			$criteria->add(new icms_db_criteria_Item('item', 'project'));
+			$criteria->add(new icms_db_criteria_Item('iid', $linked_project_ids, 'IN'));
+			$taglink_buffer = $sprockets_taglink_handler->getObjects($criteria, TRUE, TRUE);
+			unset($criteria);
+
+			// Build tags, with URLs for navigation
+			foreach ($taglink_buffer as $key => $taglink)
+			{
+				if (!array_key_exists($taglink->getVar('iid'), $project_tag_id_buffer))
+				{
+					$project_tag_id_buffer[$taglink->getVar('iid')] = array();
+				}
+				if ($taglink->getVar('tid') == 0) {
+					$project_tag_id_buffer[$taglink->getVar('iid')][] = '<a href="' . ICMS_URL . '/modules/' 
+						. $projectsModule->getVar('dirname') . '/project.php?tag_id=untagged">' 
+						. $sprockets_tag_buffer[$taglink->getVar('tid')]
+						. '</a>';
+				} else {
+					$project_tag_id_buffer[$taglink->getVar('iid')][] = '<a href="' . ICMS_URL . '/modules/' 
+						. $projectsModule->getVar('dirname') . '/project.php?tag_id=' 
+						. $taglink->getVar('tid') . '">' 
+						. $sprockets_tag_buffer[$taglink->getVar('tid')]
+						. '</a>';
+				}
+			}
+
+			// Convert the tag arrays into strings for easy handling in the template
+			foreach ($project_tag_id_buffer as $key => &$value) 
+			{
+				$value = implode(', ', $value);
+			}
+
+			// Assign each subarray of tags to the matching projects, using the item id as marker
+			foreach ($projects as $key => &$value) 
+			{
+				if (!empty($project_tag_id_buffer[$value['project_id']]))
+				{
+					$value['tags'] = $project_tag_id_buffer[$value['project_id']];
+				}
+			}
+		}
+
+		// Assign to template
+		$block['random_projects'] = $projects;
+		$block['show_logos'] = $options[2];
+		$block['projects_logo_block_display_width'] = icms_getConfig('projects_logo_block_display_width', $projectsModule->getVar('dirname'));
+		if (icms_getConfig('project_logo_position', $projectsModule->getVar('dirname')) == 1) // Align right
+		{
+			$block['project_logo_position'] = 'float:right; margin: 0em 0em 1em 1em;';
+		}
+		else // Align left
+		{
+			$block['project_logo_position'] = 'float:left; margin: 0em 1em 1em 0em;';
+		}
+		$block['projects_freestyle_logo_dimensions'] = icms_getConfig('projects_freestyle_logo_dimensions', $projectsModule->getVar('dirname'));
+	} else {
+		$block = array();
+	}	
 
 	return $block;
 }

@@ -174,7 +174,6 @@ if (in_array($clean_op, $valid_op, TRUE))
 					} else {
 						$criteria->add(new icms_db_criteria_Item('tid', $clean_tag_id));
 					}
-					$criteria->add(new icms_db_criteria_Item('tid', $clean_tag_id));
 					$criteria->add(new icms_db_criteria_Item('mid', icms::$module->getVar('mid')));
 					$criteria->add(new icms_db_criteria_Item('item', 'project'));
 					$taglink_array = $sprockets_taglink_handler->getObjects($criteria);

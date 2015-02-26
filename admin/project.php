@@ -149,9 +149,6 @@ if (in_array($clean_op, $valid_op, TRUE))
 				$taglink_array = $tagged_article_list = array();
 				$sprockets_tag_handler = icms_getModuleHandler('tag', 'sprockets', 'sprockets');
 				$sprockets_taglink_handler = icms_getModuleHandler('taglink', 'sprockets', 'sprockets');
-
-				$tag_select_box = $sprockets_tag_handler->getTagSelectBox('project.php', $clean_tag_id,
-					_AM_PROJECTS_PROJECT_ALL_PROJECTS, FALSE, icms::$module->getVar('mid'));
 				
 				if ($untagged_content) {
 				$tag_select_box = $sprockets_tag_handler->getTagSelectBox('project.php', 'untagged',

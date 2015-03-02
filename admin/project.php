@@ -146,7 +146,7 @@ if (in_array($clean_op, $valid_op, TRUE))
 			if (icms_get_module_status("sprockets")) {
 
 				$tag_select_box = '';
-				$taglink_array = $tagged_article_list = array();
+				$taglink_array = $tagged_project_list = array();
 				$sprockets_tag_handler = icms_getModuleHandler('tag', 'sprockets', 'sprockets');
 				$sprockets_taglink_handler = icms_getModuleHandler('taglink', 'sprockets', 'sprockets');
 				

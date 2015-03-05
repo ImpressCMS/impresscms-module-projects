@@ -126,14 +126,19 @@ if($projectObj && !$projectObj->isNew())
 	// Prepare tags for display
 	if (icms_get_module_status("sprockets"))
 	{
-		$project['tags'] = array();
+		$project['tag'] = array();
 		$project_tag_array = $sprockets_taglink_handler->getTagsForObject($projectObj->getVar('project_id'), $projects_project_handler, 0);
 		foreach ($project_tag_array as $key => $value)
 		{
-			$project['tags'][$value] = '<a href="' . PROJECTS_URL . 'project.php?tag_id=' . $value 
+			if ($value == 0) {
+				$project['tag'][$value] = '<a href="' . PROJECTS_URL 
+						. 'project.php?tag_id=untagged">' . _CO_PROJECTS_UNTAGGED . '</a>';
+			} else {
+				$project['tag'][$value] = '<a href="' . PROJECTS_URL . 'project.php?tag_id=' . $value 
 					. '">' . $sprockets_tag_buffer[$value] . '</a>';
+			}
 		}
-		$project['tags'] = implode(', ', $project['tags']);
+		$project['tag'] = implode(', ', $project['tag']);
 	}
 
 	// Set logo display width as per module preferences
@@ -176,10 +181,28 @@ else
 				_CO_PROJECTS_PROJECT_ALL_TAGS, TRUE, icms::$module->getVar('mid'), 'project', TRUE);
 		}
 		$icmsTpl->assign('projects_tag_select_box', $tag_select_box);
-	}			
+	}
 	
 	// Set the page title
 	$icmsTpl->assign("projects_page_title", _CO_PROJECTS_ACTIVE_PROJECTS);
+	
+	// Append the tag name to the module title (if preferences allow, and only if Sprockets module installed)
+	if (icms_get_module_status("sprockets") && icms::$module->config['projects_show_breadcrumb'] == FALSE)
+	{
+		if (array_key_exists($clean_tag_id, $sprockets_tag_buffer) && ($clean_tag_id !== 0))
+		{
+			$projects_tag_name = $sprockets_tag_buffer[$clean_tag_id];
+			$icmsTpl->assign('projects_tag_name', $projects_tag_name);
+		} elseif ($untagged_content) {
+			$icmsTpl->assign('projects_tag_name', _CO_PROJECTS_UNTAGGED);
+		}
+	} else {
+		if ($untagged_content) {
+			$icmsTpl->assign('projects_category_path', _CO_PROJECTS_UNTAGGED);
+		} elseif ($clean_tag_id) {
+			$icmsTpl->assign('projects_category_path', $sprockets_tag_buffer[$clean_tag_id]);
+		}
+	}
 	
 	///////////////////////////////////////////////////////////////////
 	////////// View projects as list of summary descriptions //////////
@@ -187,21 +210,6 @@ else
 	if (icms::$module->config['projects_index_display_mode'] == TRUE)
 	{		
 		$project_summaries = $linked_project_ids = array();
-		
-		// Append the tag name to the module title (if preferences allow, and only if Sprockets module installed)
-		if (icms_get_module_status("sprockets") && icms::$module->config['projects_show_breadcrumb'] == FALSE)
-		{
-			if (array_key_exists($clean_tag_id, $sprockets_tag_buffer) && ($clean_tag_id !== 0))
-			{
-				$projects_tag_name = $sprockets_tag_buffer[$clean_tag_id];
-				$icmsTpl->assign('projects_tag_name', $projects_tag_name);
-				$icmsTpl->assign('projects_category_path', $sprockets_tag_buffer[$clean_tag_id]->getVar('title', 'e'));
-			} elseif ($untagged_content) {
-				$projects_tag_name = $sprockets_tag_buffer[0]->getVar('title', 'e');
-				$icmsTpl->assign('projects_tag_name', $projects_tag_name);
-				$icmsTpl->assign('projects_category_path', $sprockets_tag_buffer[$clean_tag_id]->getVar('title', 'e'));
-			}
-		}
 				
 		// Retrieve projects for a given tag
 		if (($clean_tag_id || $untagged_content) && icms_get_module_status("sprockets"))
@@ -309,7 +317,7 @@ else
 			foreach ($project_summaries as &$project) {
 				$tagLinks = $icons = array();
 					if ($taglink_buffer[$project['project_id']]) {
-						foreach ($taglink_buffer[$project['project_id']] as $tag) {
+						foreach ($taglink_buffer[$project['project_id']] as &$tag) {
 							if ($tag == '0') {
 								$tagLinks[] = '<a href="' . PROJECTS_URL 
 										. 'project.php?tag_id=untagged">' 
@@ -382,14 +390,17 @@ else
 		//////////////////////////////////////////////////////////////////////////////
 		////////// View projects in compact table, optionally filter by tag //////////
 		//////////////////////////////////////////////////////////////////////////////
-		
 		$tagged_project_list = '';
 		
 		if (($clean_tag_id || $untagged_content) && icms_get_module_status("sprockets")) 
 		{
-			// Get a list of project IDs belonging to this tag
+			// get a list of project IDs belonging to this tag
 			$criteria = new icms_db_criteria_Compo();
-			$criteria->add(new icms_db_criteria_Item('tid', $clean_tag_id));
+			if ($untagged_content) {
+				$criteria->add(new icms_db_criteria_Item('tid', 0));
+			} else {
+				$criteria->add(new icms_db_criteria_Item('tid', $clean_tag_id));
+			}
 			$criteria->add(new icms_db_criteria_Item('mid', icms::$module->getVar('mid')));
 			$criteria->add(new icms_db_criteria_Item('item', 'project'));
 			$taglink_array = $sprockets_taglink_handler->getObjects($criteria);
@@ -397,7 +408,6 @@ else
 				$tagged_project_list[] = $taglink->getVar('iid');
 			}
 			$tagged_project_list = "('" . implode("','", $tagged_project_list) . "')";
-			unset($criteria);			
 		}
 		$criteria = new icms_db_criteria_Compo();
 		if (!empty($tagged_project_list))
@@ -406,8 +416,6 @@ else
 		}
 		$criteria->add(new icms_db_criteria_Item('complete', '0'));
 		$criteria->add(new icms_db_criteria_Item('online_status', '1'));
-		$criteria->setSort('weight');
-		$criteria->setOrder('ASC');
 		
 		// Retrieve the table
 		$objectTable = new icms_ipf_view_Table($projects_project_handler, $criteria, array());

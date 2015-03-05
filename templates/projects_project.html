@@ -11,16 +11,16 @@
 			<div><h2><{$projects_project.title}></h2>
 			</div>
 		<{/if}>
-		<{if $projects_project.counter || $projects_project.tags || $projects_project.updated}>
+		<{if $projects_project.counter || $projects_project.tag || $projects_project.updated}>
 			<div class="itemInfo">
 				<{if $projects_project.counter}>
 					<{$projects_project.counter}> <{$smarty.const._CO_PROJECTS_PROJECT_VIEWS}>
-					<{if $projects_project.tags || $projects_project.updated}> | <{/if}>
+					<{if $projects_project.tag || $projects_project.updated}> | <{/if}>
 				<{/if}>
-				<{if $projects_project.tags}>
-					<{$smarty.const._CO_PROJECTS_PROJECT_TAGS}> <{$projects_project.tags}>
+				<{if $projects_project.tag}>
+					<{$smarty.const._CO_PROJECTS_PROJECT_TAGS}> <{$projects_project.tag}>
 				<{/if}>
-				<{if $projects_project.tags && $projects_project.updated}> | <{/if}>
+				<{if $projects_project.tag && $projects_project.updated}> | <{/if}>
 				<{if $projects_project.updated}>
 					<span class="projects_updated"><{$smarty.const._CO_PROJECTS_PROJECT_UPDATED}>: <{$projects_project.last_update}></span>
 				<{/if}>
@@ -111,10 +111,10 @@
 			<div class="projects_no_overflow">
 				<h2 class="projects_separator"><a href="<{$project.itemUrl}>"><{$project.title}></a></h2>
 				<div class="itemInfo">
-					<{if $project.tags}>
-						<{$smarty.const._CO_PROJECTS_PROJECT_TAGS}> <{$project.tags}>
+					<{if $project.tag}>
+						<{$smarty.const._CO_PROJECTS_PROJECT_TAGS}> <{$project.tag}>
 					<{/if}>
-					<{if $project.tags && $project.updated}> | <{/if}>
+					<{if $project.tag && $project.updated}> | <{/if}>
 					<{if $project.updated}>
 						<span class="projects_updated"><{$smarty.const._CO_PROJECTS_PROJECT_UPDATED}>: <{$project.last_update}></span>
 					<{/if}>
@@ -153,11 +153,8 @@
 <!-- View project index as compact table -->
 <{if $projects_project_table}>
 	<div>
-		<{if $projects_tag_select_box}>
-			<{$projects_tag_select_box}>
-		<{/if}>
+		<{$projects_project_table}>
 	</div>
-	<{$projects_project_table}>
 <{/if}>
 
 <{includeq file='db:projects_footer.html'}>

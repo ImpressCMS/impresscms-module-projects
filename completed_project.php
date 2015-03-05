@@ -98,14 +98,20 @@ if($projectObj && !$projectObj->isNew())
 	// Prepare tags for display
 	if (icms_get_module_status("sprockets"))
 	{
-		$project['tags'] = array();
+		$project['tag'] = array();
 		$project_tag_array = $sprockets_taglink_handler->getTagsForObject($projectObj->getVar('project_id'), $projects_project_handler, 0);
 		foreach ($project_tag_array as $key => $value)
 		{
-			$project['tags'][$value] = '<a href="' . PROJECTS_URL . 'completed_project.php?tag_id=' . $value 
-					. '">' . $sprockets_tag_buffer[$value] . '</a>';
+			if ($value == 0) {
+				$project['tag'][$value] = '<a href="' . PROJECTS_URL 
+						. 'completed_project.php?tag_id=untagged">' . _CO_PROJECTS_UNTAGGED . '</a>';
+			} else {
+				$project['tag'][$value] = '<a href="' . PROJECTS_URL 
+						. 'completed_project.php?tag_id=' . $value . '">' 
+						. $sprockets_tag_buffer[$value] . '</a>';
+			}
 		}
-		$project['tags'] = implode(', ', $project['tags']);
+		$project['tag'] = implode(', ', $project['tags']);
 	}
 
 	// If the project is completed, add the completed flag to the breadcrumb title
@@ -175,10 +181,14 @@ else
 				$projects_tag_name = $sprockets_tag_buffer[$clean_tag_id];
 				$icmsTpl->assign('projects_tag_name', $projects_tag_name);
 			} elseif ($untagged_content) {
-				$projects_tag_name = $sprockets_tag_buffer[0]->getVar('title', 'e');
-				$icmsTpl->assign('projects_tag_name', $projects_tag_name);
+				$icmsTpl->assign('projects_tag_name', _CO_PROJECTS_UNTAGGED);
 			}
-			$icmsTpl->assign('projects_category_path', $sprockets_tag_buffer[$clean_tag_id]->getVar('title', 'e'));
+		} else {
+			if ($untagged_content) {
+				$icmsTpl->assign('projects_category_path', _CO_PROJECTS_UNTAGGED);
+			} else {
+				$icmsTpl->assign('projects_category_path', $sprockets_tag_buffer[$clean_tag_id]);
+			}
 		}
 				
 		// Retrieve projects for a given tag
@@ -351,19 +361,20 @@ else
 		
 		if (($clean_tag_id || $untagged_content) && icms_get_module_status("sprockets")) 
 		{
-			// Get a list of project IDs belonging to this tag
+			// get a list of project IDs belonging to this tag
 			$criteria = new icms_db_criteria_Compo();
-			$criteria->add(new icms_db_criteria_Item('tid', $clean_tag_id));
+			if ($untagged_content) {
+				$criteria->add(new icms_db_criteria_Item('tid', 0));
+			} else {
+				$criteria->add(new icms_db_criteria_Item('tid', $clean_tag_id));
+			}
 			$criteria->add(new icms_db_criteria_Item('mid', icms::$module->getVar('mid')));
 			$criteria->add(new icms_db_criteria_Item('item', 'project'));
-			$criteria->setSort('weight');
-			$criteria->setOrder('ASC');
 			$taglink_array = $sprockets_taglink_handler->getObjects($criteria);
 			foreach ($taglink_array as $taglink) {
 				$tagged_project_list[] = $taglink->getVar('iid');
 			}
-			$tagged_project_list = "('" . implode("','", $tagged_project_list) . "')";
-			unset($criteria);			
+			$tagged_project_list = "('" . implode("','", $tagged_project_list) . "')";			
 		}
 		$criteria = new icms_db_criteria_Compo();
 		if (!empty($tagged_project_list))
